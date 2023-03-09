@@ -34,3 +34,53 @@ exercises JS operators
 15. true
 16. true
 17. true
+
+exercises variables and company
+-------------------------------
+1.
+    a. a=1 b=2 c=3
+    b. d=NaN e=0
+    c. NaN
+    d. '2.70'
+    e. not a function
+    f. false
+    g. false
+    h. true
+    i. true
+    j. true
+    k. true
+    l. true
+    m. true
+    n. false
+    o. false
+    p. true
+    q. true
+    r. true
+    s. true
+    --
+    a. false
+    b. true
+    c. true
+    d. false
+    e. false
+    f. false
+    g. true
+    h. true
+    i. true
+    j. true
+    k. false
+    l. false
+    m. true
+    n. true
+2.
+    a. 12
+    b. done
+    c. done
+    d. done
+    e. -1
+    f. 6
+    g. (6,12)
+3.
+    a. 27
+    b. 7420
+    c.
