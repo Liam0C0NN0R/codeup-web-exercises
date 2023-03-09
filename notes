@@ -14,3 +14,23 @@ exercises JS primitive types
 11. boolean
 12. string
 13. number
+
+exercises JS operators
+----------------------
+1. 12
+2. 'string2'
+3. 2
+4. '3 + 4 is' + (3 + 4)
+5. false
+6. false
+7. false
+8. true
+9. true
+10. true
+11. 1
+12. false
+13. true
+14. false
+15. true
+16. true
+17. true
