@@ -9,7 +9,6 @@ alert ("Hey! " + userColor + " is mine too!");
 //When the exercise asks you to use a number, instead use a prompt to ask the user for that number.
 // Use an alert to show the results of each problem.
 // Finally, commit the changes to your git repository, and push to GitHub.
-// A product offer can be applied only if a person buys more than 2 items, and the offer has not expired. Premium members do not need to buy a specific amount of products.
 
 //You have rented some movies for your kids: The little mermaid (for 3 days), Brother Bear (for 5 days, they love it), and Hercules (1 day, you don't know yet if they're going to like it). If price for a movie per day is $3, how much will you have to pay?
 
@@ -31,16 +30,31 @@ console.log( userInput);
 var userTime = prompt ('How many hours?');
 console.log('user worked ' + userTime + ' hours');
 if (userInput === 'Facebook') {
-    alert ('Nice! you earned $' + userTime * 350)
+    alert ('Nice! you earned $' + userTime * 350);
 }
 if (userInput === 'Google') {
-    alert('Nice! you earned $' + userTime * 400)
+    alert('Nice! you earned $' + userTime * 400);
 }
 if (userInput === 'Amazon') {
-    alert('Nice! you earned $' + userTime * 380)
+    alert('Nice! you earned $' + userTime * 380);
 }
 
 // A student can be enrolled in a class only if the class is not full and the class schedule does not conflict with her current schedule.
+var userName = prompt ('what\'s your name')
+console.log('username ')
+
+var canEnroll = ('class is not full && class does not conflict with schedule');
+var canNotEnroll = ('class is full && class conflicts with schedule');
+
+
+
+
+// A product offer can be applied only if a person buys more than 2 items, and the offer has not expired. Premium members do not need to buy a specific amount of products.
+var PremuimUser = prompt ('Are you a premium user?')
+alert ('OK!')
+var prodOffer = ('purchased >=2' && 'Not Expired');
+var prodOfferPre = ('Not Expired');
+
 
 
 
