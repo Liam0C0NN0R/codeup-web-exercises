@@ -55,6 +55,20 @@ alert ('OK!')
 var prodOffer = ('purchased >=2' && 'Not Expired');
 var prodOfferPre = ('Not Expired');
 
+// canProductOffer - T/F
+// conditionals:
+// 1) itemsBought > 2 , TRUE
+// 2) expired == false OR !expired
+// 3) isPremium = true or false
+
+var premium = confirm('are you a premium member'); //
+var expired = confirm("has this expired?")
+
+var premiumCanOffer = premium == true && expired == false;
+console.log(premiumCanOffer)
+ // var canProductOffer = [1 == true] && [2 == true] && [3 == false || 3 == true] || ([3 === true] && (1 == true || 1 == false) && [2 == false])
+
+
 
 
 
