@@ -25,7 +25,7 @@
  */
 var hiThere = prompt('Who are you?')
 function sayHello(name) {
-    return("Hello, " + name + '!');
+    return "Hello, " + name + '!';
 }
 alert(sayHello(hiThere));
 
@@ -122,4 +122,4 @@ alert("your tip amount is: $" +(calculateTip(percentage, totalBill)));
 function applyDiscount(price, disc) {
     return (price - (price * disc))
 }
-console.log(applyDiscount(120, .2));
+console.log(applyDiscount(190, .2));
