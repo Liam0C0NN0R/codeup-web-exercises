@@ -152,43 +152,43 @@ var randomColor = colors[Math.floor(Math.random() * colors.length)];
  * price before the discount was, and what their price after the discount is.
  */
 // Generate a random number between 0 and 6
-var luckyNumber = Math.floor(Math.random() * 6);
-var wTotal = prompt ('What was your total today?');
-alert ('Your lucky number is: ' + luckyNumber)
-function calculateDiscount(luckyNumber, total){
-    if (luckyNumber === 0) {
-        return(total * 0);
-    } else if (luckyNumber === 1) {
-        return(total * .10);
-    } else if (luckyNumber === 2) {
-        return(total * .25);
-    } else if (luckyNumber === 3) {
-        return(total * .35);
-    } else if (luckyNumber === 4) {
-        return(total * .50);
-    } else if (luckyNumber === 5) {
-        return(total * 1);
-    }   else
-        return("not your lucky day I guess");
-}
-alert('your lucky number discount is: $' + calculateDiscount(luckyNumber, wTotal))
-function calculateTotal(luckyNumber, total) {
-    if (luckyNumber === 0) {
-        return (total - (total * 0));
-    } else if (luckyNumber === 1) {
-        return (total - (total * .10));
-    } else if (luckyNumber === 2) {
-        return (total - (total * .25));
-    } else if (luckyNumber === 3) {
-        return (total - (total * .35));
-    } else if (luckyNumber === 4) {
-        return (total - (total * .50));
-    } else if (luckyNumber === 5) {
-        return (total - (total * 1));
-    } else
-        return ("not your lucky day I guess");
-}
-confirm('Your total is: $' + (calculateTotal(luckyNumber, wTotal)));
+// var luckyNumber = Math.floor(Math.random() * 6);
+// var wTotal = prompt ('What was your total today?');
+// alert ('Your lucky number is: ' + luckyNumber)
+// function calculateDiscount(luckyNumber, total){
+//     if (luckyNumber === 0) {
+//         return(total * 0);
+//     } else if (luckyNumber === 1) {
+//         return(total * .10);
+//     } else if (luckyNumber === 2) {
+//         return(total * .25);
+//     } else if (luckyNumber === 3) {
+//         return(total * .35);
+//     } else if (luckyNumber === 4) {
+//         return(total * .50);
+//     } else if (luckyNumber === 5) {
+//         return(total * 1);
+//     }   else
+//         return("not your lucky day I guess");
+// }
+// alert('your lucky number discount is: $' + calculateDiscount(luckyNumber, wTotal))
+// function calculateTotal(luckyNumber, total) {
+//     if (luckyNumber === 0) {
+//         return (total - (total * 0));
+//     } else if (luckyNumber === 1) {
+//         return (total - (total * .10));
+//     } else if (luckyNumber === 2) {
+//         return (total - (total * .25));
+//     } else if (luckyNumber === 3) {
+//         return (total - (total * .35));
+//     } else if (luckyNumber === 4) {
+//         return (total - (total * .50));
+//     } else if (luckyNumber === 5) {
+//         return (total - (total * 1));
+//     } else
+//         return ("not your lucky day I guess");
+// }
+// confirm('Your total is: $' + (calculateTotal(luckyNumber, wTotal)));
 
 
 /**
@@ -209,6 +209,8 @@ confirm('Your total is: $' + (calculateTotal(luckyNumber, wTotal)));
  * Can you refactor your code to use functions?
  * HINT: The way we prompt for a value could be improved
  */
+
+
 var isPositive = function (num) {
     if (num > 0) {
         alert('The number ' + num + ' is positive')
@@ -216,7 +218,17 @@ var isPositive = function (num) {
         alert('The number ' + num + ' is negative')
     }
 }
-witch (confirmNumber) {
+var isEven = function (num) {
+    if (num %2 === 0) {
+        alert('The number ' + num + ' is even')
+    } else {
+        alert('The number ' + num + ' is odd')
+    }
+}
+var plusHundred = function (num) {
+    alert('that number plus 100 is: ' + Number(num + 100))}
+var confirmNumber = confirm("would you like to enter a number?")
+switch (confirmNumber) {
 case true:
     var numberInput = +prompt('Please enter a number')
     isEven(numberInput)
