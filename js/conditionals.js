@@ -227,8 +227,13 @@ var isEven = function (num) {
 }
 var plusHundred = function (num) {
     alert('that number plus 100 is: ' + Number(num + 100))}
+var tryAgain = function (num){
+    if (numberInput = NaN) alert ("Who taught you to count?")
+}
 var confirmNumber = confirm("would you like to enter a number?")
 switch (confirmNumber) {
+    case NaN:
+        tryAgain(numberInput)
 case true:
     var numberInput = +prompt('Please enter a number')
     isEven(numberInput)
