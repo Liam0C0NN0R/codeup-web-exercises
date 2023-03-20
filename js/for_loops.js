@@ -19,8 +19,8 @@ upto a range */
  for (let i = 1; i <=10; i++){
 var numRandom = Math.floor(Math.random() * (200 - 20) + 20);
     if (numRandom % 2 === 0)
-        console.log(numRandom + " is even");{
-     } else {
+        console.log(numRandom + " is even");
+      else {
          (numRandom % 2 !== 0)
          console.log(numRandom + " is odd");
      }
