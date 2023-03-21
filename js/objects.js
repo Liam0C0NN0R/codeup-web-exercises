@@ -26,7 +26,7 @@ var person = {
      * > console.log(person.sayHello()) // "Hello from Rick Sanchez!"
      */
 function sayHello(person){
-    return ('Hello ' + person)
+    return ('Hello from ' + person)
     }
     console.log(sayHello(person.firstName + person.lastName))
     /** TODO:
@@ -43,19 +43,19 @@ function sayHello(person){
      * and console.log the relevant messages for each person
      */
 
-//     var shoppers = [
-//         {name: 'Cameron', amount: 180},
-//         {name: 'Ryan', amount: 250},
-//         {name: 'George', amount: 320}
-//     ];
+    var shoppers = [
+        {name: 'Cameron', amount: 180},
+        {name: 'Ryan', amount: 250},
+        {name: 'George', amount: 320}
+    ];
 //
-// shoppers.forEach(function (shopper) {
-//     if (shopper.amount > 200)
-//         return console.log(('Congrats ' + shopper.name + ' your total is: $' + shopper.amount +' your total after discount is: $' + (shopper.amount - (shopper.amount * .12))))
-//     else if (shopper.amount < 200)
-//         return (console.log('hey ' + shopper.name + ' your total is: $' + shopper.amount))
-//
-// })
+shoppers.forEach(function (shopper) {
+    if (shopper.amount > 200)
+        return console.log(('Congrats ' + shopper.name + ' your total is: $' + shopper.amount +' your total after discount is: $' + (shopper.amount - (shopper.amount * .12))))
+    else if (shopper.amount < 200)
+        return (console.log('hey ' + shopper.name + ' your total is: $' + shopper.amount))
+
+})
 
 
     /** TODO:
@@ -122,9 +122,15 @@ var books = [
      *      ---
      *      ...
      */
-books.forEach(function (book) {
-    console.log('book #' + books.indexOf(book) + ' Title: ' + book.title + ' Author: ' + book.author.firstName + book.author.lastName)
-    })
+// books.forEach(function (book) {
+//     console.log('book #' + books.indexOf(book) + ' Title: ' + book.title + ' Author: ' + book.author.firstName + book.author.lastName)
+    //})
+    for(var i = 0; i < books.length; i++){
+        console.log("Book # " + (i+1));
+        console.log("Title: " + books[i].title);
+        console.log("Author: " + books[i].author.firstName + " " + books[i].author.lastName);
+        console.log('---');
+    }
     /**
      * Bonus:
      * - Create a function named `createBook` that accepts a title and author
@@ -145,4 +151,11 @@ function createBook(Title, author){
     console.log(object.title + object.author)
     }
     showBookInfo(book1)
+//     function createBook(title, firstname, lastname){
+//         Object.create(
+//         this.title = title);
+//         this.firstName = firstname;
+//         this.lastName = lastname;
+//     }
+//     console.log(createBook('Bingo', 'Bango', 'Bongo'))
 })();
