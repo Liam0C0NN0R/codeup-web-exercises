@@ -43,6 +43,6 @@
     console.log(planets);
 
     console.log("Sorting the planets array.");
-    planets.reverse();
+    planets.sort();
     console.log(planets);
 })();

@@ -35,3 +35,15 @@
     });
     console.log(list)
 })();
+
+
+var waterBottle = {
+    size: '64oz',
+    color: 'white/black',
+    stickers: 'hella',
+    reusable: true,
+    dishwasherSafe: false
+
+}
+console.log(waterBottle)
+console.log('my waterbottle is ' + waterBottle.color)
