@@ -139,4 +139,10 @@ function createBook(Title, author){
     this.title = Title;
     this.author = author;
     }
+    let book1 = new createBook('bingo', 'bango')
+    console.log(book1)
+    function showBookInfo(object){
+    console.log(object.title + object.author)
+    }
+    showBookInfo(book1)
 })();
