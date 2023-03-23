@@ -1,0 +1,29 @@
+body {
+
+background-color: lightgray ;
+background-image: url("img/Image 3-23-23 at 12.43 PM.jpg");
+    background-size: 150px;
+    position: relative;
+    overflow: hidden;
+    background-repeat: repeat round;
+ background-blend-mode: color-burn;
+/*#myelement {*/
+/*    position: relative;*/
+/*    overflow: hidden;*/
+/*    transform: rotate(30deg);*/
+/*}*/
+
+/*#myelement::before {*/
+/*    content: "";*/
+/*    position: absolute;*/
+/*    width: 20%;*/
+/*    height: 20%;*/
+/*    top: -50%;*/
+/*    left: -50%;*/
+/*    z-index: -1;*/
+/*    background: url() 0 0 repeat;*/
+/*    transform: rotate(-30deg);*/
+
+}
+
+}
