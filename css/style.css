@@ -1,5 +1,30 @@
 
-.fancy-header{
-    color: purple;
-    text-decoration: underline;
+h1.fancy-header{
+    color: darkgreen;
+}
+h4.fancy-header{
+    color: red;
+}
+button{
+    font-size: 24px;
+    border-radius: 24px;
+    border-color: red;
+}
+input{
+    font-size: 24px;
+}
+p:first-of-type{
+    border-style: dotted;
+    border-color: blue;
+}
+.bananas{
+    background-color: yellow;
+    background-size: auto;
+}
+ul{
+    font-size: 30px;
+}
+form{
+    background-color: black;
+    color: white
 }
