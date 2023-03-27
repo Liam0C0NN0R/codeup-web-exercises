@@ -1,7 +1,43 @@
 body, html {
     height: 100%;
-    width: 100%;
-    padding: 0;
-    margin: 0;
+    width: 75%%;
+    padding: 1em;
+    margin: 5px;
     font-family: Arial, Ubuntu, sans-serif;
+}
+.message-info{
+    background-color: lightblue;
+    color: #373fff;
+    padding: .5em;
+    border-color: #666666;
+    border-radius: 4px;
+    margin: .5em;
+}
+.message-success{
+    background-color: lightgreen;
+    color: darkgreen;
+    padding: .5em;
+    border-color: #666666;
+    border-radius: 4px;
+    margin: .5em;
+}
+.message-warning{
+    background-color: #f5f262;
+    color: #828004;
+    padding: .5em;
+    border-color: #666666;
+    border-radius: 4px;
+    margin: .5em;
+    /*text-shadow: -.5px .5px 0 #000,*/
+    /*            .5px .5px 0 #000,*/
+    /*            .5px -.5px 0 #000,*/
+    /*            -.5px -.5px 0 #000;*/
+}
+.message-error{
+    background-color: #f77f74;
+    color: #b30c0c;
+    padding: .5em;
+    border-color: #666666;
+    border-radius: 4px;
+    margin: .5em;
 }
