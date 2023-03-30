@@ -11,7 +11,6 @@ h2{
 a{
     text-decoration: none;
     color: black;
-    display: inline-block;
 }
 .menu {
     display: flex;
@@ -22,8 +21,9 @@ a{
     justify-content: space-evenly;
     flex-direction: row;
     align-items: center;
-
-
+}
+.left{
+    align-items: center;
 }
 .item {
     font-family: 'Work Sans', sans-serif;
@@ -32,7 +32,8 @@ a{
     padding-right: 4px;
     font-size: 12px;
     display: inline-block;
-    align-items: flex-start;
+    align-items: center;
+    flex-direction: row;
 
 }
 .link{
