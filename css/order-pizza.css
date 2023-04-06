@@ -16,5 +16,8 @@ form > input{
     width: auto; !important;
 }
 .badge{
-    border-radius: 1em;
+    border-radius: 1.5em;
 }
+/*.pizza-badges{*/
+/*    margin-left: 2em;*/
+/*}*/
