@@ -1,0 +1,20 @@
+.jumbotron{
+    background: url("../img/pizza.png");
+    height: 246px;
+    background-size: cover;
+
+    /*display: flex;*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
+}
+.text-center{
+    /*margin: 5em 0;*/
+    width: 100%;
+    display: inline-block;
+}
+form > input{
+    width: auto; !important;
+}
+.badge{
+    border-radius: 1em;
+}
