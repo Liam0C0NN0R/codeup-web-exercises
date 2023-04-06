@@ -18,6 +18,9 @@ form > input{
 .badge{
     border-radius: 1.5em;
 }
+.btn btn-primary{
+    justify-self: flex-end;
+}
 /*.pizza-badges{*/
 /*    margin-left: 2em;*/
 /*}*/
