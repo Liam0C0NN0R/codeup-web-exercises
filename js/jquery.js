@@ -1,6 +1,15 @@
-"Use Strict"
+$("h1").click(function () {
+    $("h1").css('background-color', 'red');
+});
+$("p").dblclick(function (e) {
+    $("p").css('font-size', '18px');
+});
 
-$('li').css('font-size', '20px');
-$('h1, p, li').css('background-color', 'green');
-var title = $('.yo').html();
-alert(title);
+$('li').hover(
+    function() {
+        $(this).css('color', 'red');
+    },
+    function() {
+        $(this).css('color', 'black');
+    }
+);
