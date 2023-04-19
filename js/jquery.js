@@ -1,4 +1,3 @@
 "Use Strict"
-var title = $('#Yo').html();
-alert(title);
+$('.codeup').css('border', '1px solid #F00');
 
