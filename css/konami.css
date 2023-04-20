@@ -1,9 +1,18 @@
-.Konami {
+.fade-in-text {
     font-family: 'UnifrakturMaguntia', cursive;
-    justify-content: center;
+    text-align: center;
+    color: #d9d791;
+    animation: fadeIn 10s linear 1 forwards;
+
+}
+@keyframes fadeIn {
+    0%{opacity: 0;}
+    50%{ opacity: 1;}
+    100%{opacity: 0}
 }
 
-/*noinspection CssUnknownTarget*/
+
 body {
-    background-image: url("assets/konami-1000.gif");
+    background-image: url("https://im3.ezgif.com/tmp/ezgif-3-53c07de90f.gif");
+    background-size: auto;
 }
