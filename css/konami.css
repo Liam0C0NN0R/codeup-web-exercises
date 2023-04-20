@@ -1,0 +1,9 @@
+.Konami {
+    font-family: 'UnifrakturMaguntia', cursive;
+    justify-content: center;
+}
+
+/*noinspection CssUnknownTarget*/
+body {
+    background-image: url("assets/konami-1000.gif");
+}
