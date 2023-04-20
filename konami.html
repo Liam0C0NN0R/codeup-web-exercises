@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Konami Code</title>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
+
+<body>
+<div class="Konami">
+<h1>Konami Code</h1>
+<form id="Form">
+
+    Code: <input type="text"><br><br>
+
+    <input type="button" onclick="clearInput()" value="Clear form">
+</form>
+</div>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous">
+</script>
+<script src="/js/jquery.js"></script>
+<script>
+    const Toccata = new Audio("assets/050AToccataintoBloodSoakedDarkness.mp3");
+
+    function clearInput() {
+        document.getElementById("Form").reset();
+    }
+
+    "use strict";
+    $(document).keyup(function (event) {
+        console.log(event.keyCode);
+    });
+    var konamiCode = [];
+    var theCode = [38, 38, 40, 40, 37, 39, 37, 39, 65, 66];
+    $(document).keyup(function (event) {
+        if (event.keyCode) {
+            konamiCode.push(event.keyCode);
+            console.log(konamiCode);
+            if (konamiCode.join("") == theCode.join('')) {
+                konamiCode = [];
+                confirm('You added 30 lives! Prepare to lose them!');
+                if (confirm === true) ;
+
+                    $(".Konami").toggle("puff");
+                $("body").css("background-color", "#A91F01");
+                Toccata.play();
+
+            }
+            if (konamiCode.length > theCode.length) {
+                alert("Please enter the correct code");
+                konamiCode = []
+            }
+        }
+    });
+    $("confirm").click(e => Toccata.play());
+</script>
+
+</body>
+</html>
