@@ -1,7 +1,8 @@
 .fade-in-text {
     font-family: 'UnifrakturMaguntia', cursive;
     text-align: center;
-    color: #d9d791;
+    /*color: #d9d791;*/
+    color: black;
     animation: fadeIn 10s linear 1 forwards;
 
 }
@@ -13,6 +14,6 @@
 
 
 body {
-    background-image: url("https://im3.ezgif.com/tmp/ezgif-3-53c07de90f.gif");
+    background-image: image("assets/konami_logo.jpg");
     background-size: auto;
 }
