@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FAQs</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="css/jquery_faq.css">
+<!--    <script src="js/jquery_faqs.js"></script>-->
+</head>
+<body>
+<div class="faq">
+    <dl>
+        <dt>How old is the National Park System?</dt>
+        <dd id = "fAQ">The National Park Service was created by an act signed by President Woodrow Wilson on August 25, 1916. Yellowstone National Park was established by an act signed by President Ulysses S. Grant on March 1, 1872, as the nation's first national park.</dd>
+        <dt>How many areas are in the National Park System?</dt>
+        <dd id = "fAQ">The system includes 424 areas covering more than 85 million acres in every state, the District of Columbia, American Samoa, Guam, Puerto Rico, and the Virgin Islands. These areas include national parks, monuments, battlefields, military parks, historical parks, historic sites, lakeshores, seashores, recreation areas, scenic rivers and trails, and the White House.</dd>
+        <dt>What is the largest national park site? Smallest?</dt>
+        <dd id = "fAQ">Largest: Wrangell-St. Elias National Park and Preserve, AK, at 13.2 million acres
+            Smallest: Thaddeus Kosciuszko National Memorial, PA, at 0.02 acres</dd>
+        <dt>What is the National Park Service budget?</dt>
+        <dd id = "fAQ">Fiscal Year (FY) 2014 Enacted: $2.98 billion
+            FY 2015 Enacted: $2.615 billion
+            FY 2016 Enacted:$2.851 billion
+            FY 2017 Enacted: $2.932 billion</dd>
+        <dt>How do I obtain a park entrance pass?</dt>
+        <dd id = "fAQ">Fewer than one-third of the national parks charge entrance fees. You can obtain park entrance passes by visiting a park site that charges an entrance fee. Entrance fee sites have passes available; we recommend calling a park prior to your visit. (See the park search to locate a specific park.) There are a number of entrance passes available, including park-specific passes as well as passes that offer entrance to more than 2,000 federal recreation sites in addition to the national parks (Annual, Military, Senior, 4th Grade, Access, and Volunteer passes).</dd>
+        <dt>Do national parks have guided tours?</dt>
+        <dd id = "fAQ">Yes, each national park offers guided tours that can either be hosted by the National Park Service (NPS) or by certified guides. A large part of the National Park Service mission aims to educate visitors about the uniqueness of each different park and how to enjoy each park to its fullest. Find information about guided tours at official park visitor and welcome centers or research for certified guides in gateway towns.</dd>
+        <dt>How many people visit national parks each year?</dt>
+        <dd>Last year, there were 327 million national park visits in the United States. Some national parks, like Zion, can become overcrowded during warmer months and require visitors to use park transportation rather than personal vehicles.</dd>
+        <dt>How do I make reservations for camping or staying in national parks?</dt>
+        <dd>Most of the campsites in national parks and national forests are available on a first-come, first serve basis, but we still recommend travelers make reservations online whenever possible. We highly recommend making online reservations for popular national parks at least three to five months in advance</dd>
+        <dt>Are national parks open all year round?</dt>
+        <dd>The answer to this frequently-asked national parks question is that it depends on the park. While most national parks are open year-round, there might be some entrances that are closed due to weather or construction.</dd>
+        <dt>What’s the best way to plan my trip to a national park?</dt>
+        <dd>There are two ways to plan a national park vacation. You can choose a special tour operator that will map out your itinerary for you or you can organize the trip on your own. Both options have valid advantages. You might get a better price on a hotel through a tour operator; however, you might not have the same flexibility and freedom as if you would organize your own vacation</dd>
+    </dl>
+</div>
+<button type="button">Answers!</button>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script>
+
+    $("button").click(function(){
+        $("dd").toggleClass("invisible");
+    });
+
+    $("dt").click(function(){
+        $("dt").css("background-color", "yellow");
+    });
+</script>
+</body>
+</html>
