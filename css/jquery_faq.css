@@ -10,13 +10,12 @@ img {
 }
 container{
     flex-wrap: wrap;
+    align-items: center;
+}
+.sized{
+    max-width: 150px;
 }
 .pictures{
     display: flex;
-    display: inline-block;
-    padding: 0em;
-    margin: .5em;
-    flex-wrap: wrap;
-    flex-direction: row;
-
+    align-items: center;
 }

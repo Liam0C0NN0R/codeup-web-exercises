@@ -2,17 +2,7 @@
 // function myFunction() {
 //     var element = document.getElementById("myDIV");
 //     element.classList.add("mystyle");
-// }
-// // $('#fAQ').addClass("invisible");
-//
-// $("dd").addClass(function (index, currentClass) {
-//     var addedClass;
-//     if (currentClass === null) {
-//         addedClass = "invisible";
-//         $("p").text("There is one green div");
-//     }
-//     return addedClass;
-// });
+
 
 $('#button2').click(function () {
     $('ul').each(function () {
@@ -67,7 +57,7 @@ $('#button4').click(function () {
         console.log("target: " + $targetSrc);
         let $imgSrc = $('#box2').find('img').attr('src');
         console.log("this: " + $imgSrc);
-        $('#box3').find('img').attr('src', $imgSrc);
+        $('#box3').find('img').attr('src', $targetSrc);
         $('#box2').find('img').attr('src', $imgSrc);
     }
 });
