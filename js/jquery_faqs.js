@@ -44,8 +44,8 @@ $('#button4').click(function () {
     let num = randomNumber(1, 2);
     console.log("random num: " + num);
 
-    //if num == 1 then swap left
-    if (num === 1) {
+    //if num === even then swap left
+    if (num % 2 === 0) {
         let $targetSrc = $('#box1').find('img').attr('src');
         console.log("target: " + $targetSrc);
         let $imgSrc = $('#box2').find('img').attr('src');
@@ -53,12 +53,14 @@ $('#button4').click(function () {
         $('#box1').find('img').attr('src', $imgSrc);
         $('#box2').find('img').attr('src', $targetSrc);
     } else {
-        let $targetSrc = $('#box3').find('img').attr('src');
-        console.log("target: " + $targetSrc);
-        let $imgSrc = $('#box2').find('img').attr('src');
-        console.log("this: " + $imgSrc);
-        $('#box3').find('img').attr('src', $targetSrc);
-        $('#box2').find('img').attr('src', $imgSrc);
+        if (num % 2 !== 0) {
+            let $targetSrc = $('#box3').find('img').attr('src');
+            console.log("target: " + $targetSrc);
+            let $imgSrc = $('#box2').find('img').attr('src');
+            console.log("this: " + $imgSrc);
+            $('#box3').find('img').attr('src', $imgSrc);
+            $('#box2').find('img').attr('src', $targetSrc);
+        }
     }
 });
 
@@ -73,5 +75,5 @@ $('#button5').click(function () {
 });
 
 const randomNumber = (min, max) => {
-    return Math.floor(Math.random() * (max - min + 1) + min);
+    return Math.floor(Math.random() * 100);
 };
