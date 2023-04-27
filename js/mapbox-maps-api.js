@@ -1,5 +1,6 @@
 (function () {
-    var token = 'pk.eyJ1IjoiaGFsY3lvbmljaGVybWVzIiwiYSI6ImNsZ3h2ajVkaDAzYnUzbHB1YWhpMjk3MmYifQ.644-jX7myW9zJ54-ws7NUQ';
+    import{ openWeatherKey, mapboxToken} from 'js/keys.js';
+    var token = mapboxToken;
 
     mapboxgl.accessToken = token;
 
