@@ -77,10 +77,10 @@
     //     })
     // });
     document.getElementById("makeMarkerBtn").addEventListener("click", function () {
-        let newJoint = geocode(document.getElementById('makeMarker').value, token)
+        let newJoint = reverseGeocode(document.getElementById('makeMarker').value, token)
         newJoint.then(function (results) {
             map.setCenter([results[0], results[1]])
-            let newJoint = new mapboxgl.Marker()
+            let newMark = new mapboxgl.Marker()
                 .setLngLat([results[0], results[1]])
                 .addTo(map);
         })
