@@ -7,7 +7,7 @@
   <link href='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css' rel='stylesheet' />
     <style>
         #map {
-            width: 95%;
+            width: 75%;
             height: 600px;
         }
     </style>
@@ -16,45 +16,22 @@
 <body>
 
 <div id='map'></div>
+<form>
+    <label for="zoom">Set zoom:</label>
+    <input type="text" name="zoom" id="zoom">
+    <button class="formBtn" id="zoomSubmit">Zoom</button>
+</form>
+<form>
+    <label for="makeMarker">Enter Address:</label>
+    <input type="text" name="makeMarker" id="makeMarker">
+    <button class="markBtn" id="makeMarkerBtn">Make Marker</button>
+</form>
+<button id="hideMarkers">Hide Markers</button>
 
 <script src="js/mapbox-geocoder-utils.js"></script>
+<script src="js/mapbox-maps-api.js"></script>
 <script>
-    var token = 'pk.eyJ1IjoiaGFsY3lvbmljaGVybWVzIiwiYSI6ImNsZ3h2ajVkaDAzYnUzbHB1YWhpMjk3MmYifQ.644-jX7myW9zJ54-ws7NUQ';
 
-    mapboxgl.accessToken = token;
-
-    const map = new mapboxgl.Map({
-    container: 'map', // container ID
-    style: 'mapbox://styles/mapbox/streets-v12', // style URL
-    center: [-96, 33], // starting position [lng, lat]
-    zoom: 4, // starting zoom
-  });
-    var cocosInfo = {
-        address: "9351 Warren Pkwy #125, Frisco, TX 75035",
-        popupHTML: "<p>Coco Ichibanya</p>"
-    };
-  // the  geocode method from mapbox-geocoder-utils.js
-  function placeMrkAndPop(info, token, map) {
-      geocode("Cocos.9351 Warren Pkwy #125, Frisco, TX 75035", 'token').then((coordinates) => {
-          // console.log(result);
-          var popup = new mapboxgl.Popup()
-              .setHTML(info.popupHTML);
-          var marker = new mapboxgl.Marker()
-              .setLngLat([-96.802000, 33.108510])
-              .addTo(map)
-              .setPopup(popup);
-          popup.addTo(map)
-          // map.setCenter(result);
-          // map.setZoom(8);
-      });
-  }
-  placeMrkAndPop(cocosInfo, token, map);
-  // var cocos = new mapboxgl.Marker()
-  // .setLngLat([-96.802000, 33.108510])
-  // .addTo(map);
-  // var cocosPop = new mapboxgl.Popup()
-  //     .setHTML("<h2>CoCo Ichibanya</h2>")
-  // cocos.setPopup(cocosPop)
 </script>
 </body>
 </html>
