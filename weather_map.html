@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Weather Project</title>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
@@ -12,13 +13,28 @@
 </head>
 <body>
 <!--navbar-->
-<!--weather cards-->
-<!--search bar-->
-<!--map-->
+<div class="container-fluid">
+    <div class="row text-white" id="nav">
+        <div class="col-md-1 align-items-end">Who Needs Dave Spritz</div>
+        <div class="col-md-8" id="spacer"></div>
+        <div class="col-md-2" id='city'></div>
+    </div>
+    <!--weather cards-->
+    <div class="row justify-content-center justify-content-around" id="insert-card">
+    </div>
+    <!--search bar-->
+    <form class="ml-2 mb-4 mt-4 text-white">
+        <input type="text" class="form-control border-0" id="input" >
+        <button class="btn text-white d-none"  id="search-btn">Where?</button>
+    </form>
+    <!--map-->
+    <div class="map mt-5" id='map'></div>
+</div>
+
 <!--pizzazz-->
 <!--Using HTML, CSS, jQuery, AJAX, and the OpenWeatherMap API, start by showing the current conditions for city you live in on your page.-->
 
-<!--Update your layout and AJAX request(s) to display a five day forecast for the city you live in that looks like the screenshot below.-->
+<!--Update your layout and AJAX request(s) to display a five day forecast for the city you live in.-->
 
 <!--If you want to add the icons the URLs for OpenWeatherMap's icons are formatted like: http://openweathermap.org/img/w/[icon].png where [icon] comes from the API response.-->
 
