@@ -1,8 +1,8 @@
 (function () {
     import{ openWeatherKey, mapboxToken} from 'js/keys.js';
-    var token = mapboxToken;
 
-    mapboxgl.accessToken = token;
+
+    mapboxgl.accessToken = mapboxToken;
 
     const map = new mapboxgl.Map({
         container: 'map', // container ID
