@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Weather Project</title>
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200&display=swap" rel="stylesheet">
     <!-- Mapbox JS -->
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js'></script>
     <!-- Mapbox CSS -->
@@ -17,15 +19,14 @@
 <!--navbar-->
 <div class="container-fluid">
     <div class="row text-white" id="nav">
-        <div class="col-md-1 align-items-end">Who Needs Dave Spritz</div>
-        <div class="col-md-8" id="spacer"></div>
-        <div class="col-md-2" id='city'></div>
+        <div class="col">Forecast by Dave Spritz</div><div class="col"></div>
+        <div class="col" id='city'></div>
     </div>
     <!--weather cards-->
-    <div class="row justify-content-center justify-content-around" id="card">
+    <div class="row justify-content-center justify-content-around mt-1" id="card">
     </div>
     <!--search bar-->
-    <form class="ml-2 mb-4 mt-4 text-white">
+    <form class="mb-3 mt-3 text-white" id="search-bar">
         <input type="text" class="form-control border-0" id="search">
         <button id="submit" class="btn text-white">Where?</button>
     </form>

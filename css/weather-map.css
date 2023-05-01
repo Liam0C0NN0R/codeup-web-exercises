@@ -7,14 +7,31 @@
 #nav{
     background: #0f5c95 ;
     backdrop-filter: blur(.1em);
+    font-family: 'Raleway', sans-serif;
 }
 .card{
+    font-family: 'Raleway', sans-serif;
     color: black;
     height: auto;
-    width: 50%;
+    width: calc(50% - 1em);
     opacity: 0.7;
 }
 
 body{
     background-color: #198fff;
+}
+hr{
+    margin: 2px;
+}
+p{
+    margin: 2px;
+}
+div.card.col{
+    padding: 1px;
+    margin: 2px;
+}
+#search-bar{
+    width: auto;
+    margin-left: calc(20% - 1em);
+    margin-right: calc(20% - 1em);
 }
