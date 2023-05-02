@@ -35,7 +35,7 @@
             <hr>
             <div class="real-feel"><p>Feels like: ${Math.round(data.list[i].main.feels_like)} °F</p></div>
             <hr>
-            <div><p>${data.list[i].weather[0].description.toUpperCase()}</p><br><img class="image" src = "http://openweathermap.org/img/w/${data.list[i].weather[0].icon}.png" alt='Weather icon'>
+            <div><p>${data.list[i].weather[0].description.toUpperCase()}</p><br><img class="image" src = "http://openweathermap.org/img/w/${data.list[i].weather[0].icon}.png" alt='Weather icon'></div>
             <hr>
             <div class="wind"><p>Wind:${Math.round(data.list[i].wind.speed)} MPH</p></div>
         </div>`);
@@ -58,8 +58,8 @@
                     $("#city").append(`Location: ${data.city.name.toUpperCase()}`)
                     for (let i = 0; i < data.list.length; i = i + 8) {
                         $("#card").append(`
-      <div class="card col shadow-lg">
-            <div class="cardHeader pt-4"><p>${data.list[i].dt_txt.slice(0, 10)}</p></div>
+      <div class="card col">
+            <div class="card"><p>${data.list[i].dt_txt.slice(0, 10)}</p></div>
             <hr>
            <div class="temperature"><p>Temperature<br> Low :${Math.round(data.list[i].main.temp_min)} °F  High :${Math.round(data.list[i].main.temp_max)} °F</p></div>
             <hr>
@@ -67,7 +67,6 @@
             <hr>
             <div class="real-feel"><p>Feels like:${Math.round(data.list[i].main.feels_like)} °F</p></div>
             <hr>
-            <div>${data.list[i].weather[0].main.toUpperCase()}<br>
             ${data.list[i].weather[0].description.toUpperCase()}<br>
             <img class="image" src = "http://openweathermap.org/img/w/${data.list[i].weather[0].icon}.png" alt='Weather icon'></div>
             <hr>
@@ -83,12 +82,9 @@
 
                 updateCards(lngLat.lat, lngLat.lng)
             }
-
             marker.on('dragend', onDragEnd);
 
-            ;
-
-// Search for a city and update the map
+            // Search for a city and update the map
             document.querySelector("#search-form").addEventListener("submit", async (e) => {
                 e.preventDefault();
                 const query = document.querySelector("#search-input").value;
@@ -152,6 +148,10 @@
                 });
             });
         });
+    });
+    document.querySelector("#zoomSubmit").addEventListener('click', event => {
+        event.preventDefault()
+        map.setZoom(document.querySelector("#zoom").value)
     });
 
 })();
