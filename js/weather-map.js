@@ -1,13 +1,5 @@
 (function () {
     "use strict"
-    // import {openWeatherKey, mapboxToken} from 'js/keys.js';
-
-    // $.get("https://api.openweathermap.org/data/2.5/weather", {
-    //     APPID: openWeatherKey,
-    //     q: "San Antonio, US"
-    // }).done(function (data) {
-    //     console.log(data);
-    // });
     let coords = []
     mapboxgl.accessToken = mapboxToken;
     const map = new mapboxgl.Map({
@@ -50,20 +42,22 @@
         }
 
         //update the cards:
-        function updateCards(lat, lng) {
-            $.get("http://api.openweathermap.org/data/2.5/forecast", {
-                APPID: openWeatherKey,
-                lat: lat,
-                lon: lng,
-                units: "imperial"
-            }).done(function (data) {
-                //reset city:
-                $("#city").text("");
-                //reset cards:
-                $("#card").text("");
-                $("#city").append(`Location: ${data.city.name.toUpperCase()}`)
-                for (let i = 0; i < data.list.length; i = i + 8) {
-                    $("#card").append(`
+        $(document).ready(function () {
+            function updateCards(lat, lng) {
+                $.get("http://api.openweathermap.org/data/2.5/forecast", {
+                    APPID: openWeatherKey,
+                    lat: lat,
+                    lon: lng,
+                    units: "imperial"
+                }).done(function (data) {
+                    console.log(data)
+                    //reset city:
+                    $("#city").text("");
+                    //reset cards:
+                    $("#card").text("");
+                    $("#city").append(`Location: ${data.city.name.toUpperCase()}`)
+                    for (let i = 0; i < data.list.length; i = i + 8) {
+                        $("#card").append(`
       <div class="card col shadow-lg">
             <div class="cardHeader pt-4"><p>${data.list[i].dt_txt.slice(0, 10)}</p></div>
             <hr>
@@ -79,120 +73,85 @@
             <hr>
             <div class="wind"><p>Wind:${Math.round(data.list[i].wind.speed)} MPH</p></div>
         </div>`);
+                    }
+                })
+            }
+
+            //Drag and load feature:
+            function onDragEnd() {
+                const lngLat = marker.getLngLat();
+
+                updateCards(lngLat.lat, lngLat.lng)
+            }
+
+            marker.on('dragend', onDragEnd);
+
+            ;
+
+// Search for a city and update the map
+            document.querySelector("#search-form").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const query = document.querySelector("#search-input").value;
+                try {
+                    const response = await fetch(
+                        `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${mapboxToken}`
+                    );
+                    const data = await response.json();
+                    const {center} = data.features[0];
+                    map.flyTo({center});
+                    console.log(response);
+                    console.log(data);
+
+                    // Load weather data for the searched city
+                    const lat = center[1];
+                    const lon = center[0];
+                    console.log(lat, lon);
+                    const weatherResponse = await fetch(
+                        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${openWeatherKey}&units=metric`
+                    );
+                    const weatherData = await weatherResponse.json();
+                    const {name, main} = weatherData;
+
+                    new mapboxgl.Marker()
+                        .setLngLat([lon, lat])
+                        .addTo(map);
+                } catch (err) {
+                    console.error(err);
+                    console.log('jqXHR');
+                    console.log('textStatus');
                 }
-            })
-        }
-        //Drag and load feature:
-        function onDragEnd() {
-            const lngLat = marker.getLngLat();
+            });
 
-            updateCards(lngLat.lat, lngLat.lng)
-        }
-
-        marker.on('dragend', onDragEnd);
-
-        $('#submit').click(function () {
-            var search = $("#search").val();
-
-            //Use geocode function to get coordinates based on a physical address then store
-            geocode(search, mapboxToken).then(function (result) {
-                var long = result[0].toString();
-                var lat = result[1].toString();
-                $.ajax("http://api.openweathermap.org/data/2.5/onecall" + openWeatherKey + "/" + lat + ", " + long)
-                    .done(function (data){
-                        updateCards()
+            function geocode(search, token) {
+                // console.log(query);
+                return fetch(
+                    "https://api.mapbox.com/geocoding/v5/mapbox.places/" +
+                    encodeURIComponent(search) +
+                    ".json?access_token=" +
+                    mapboxToken
+                )
+                    .then(function (response) {
+                        return response.json();
+                        console.log(response);
+                        console.log(data);
+                    })
+                    .then(function (data) {
+                        return data.features[0].center;
                     });
+            }
+
+            $("#search-button").click(function () {
+                var search = $("#search-input").val();
+                console.log(search);
+                geocode(search, mapboxToken).then(function (coords) {
+                    // Update the marker position
+                    marker.setLngLat(coords).addTo(map);
+
+                    // Update the weather data
+                    updateCards(coords[1], coords[0]);
+                });
             });
         });
-
-
-        // const fetchWeather = (lat, lon, units, key) => {
-        //     $.get("http://api.openweathermap.org/data/2.5/onecall", {
-        //         APPID: openWeatherKey,
-        //         lat: lat,
-        //         lon: lon,
-        //         units: units
-        //     }).done(function (data) {
-        //
-        //         console.log('The entire response:', data);
-        //
-        //     });
-        // }
-        //search function:
-        // $("#submit").click(function (e) {
-        //     e.preventDefault()
-        //     var input = $("#search").val();
-        //     geocode(input, mapboxToken).then(function (result) {
-        //         console.log(result);
-        //         updateCards(result);
-        //         map.setCenter(result);
-        //         map.setZoom(12);
-        //         marker.setLngLat(result);
-        //     });
-        // });
-        // const newGeoMark = (address, token) => {
-        //     geocode(address, token).then((res) => {
-        //         const newMarker = new mapboxgl.Marker()
-        //             .setLngLat(res)
-        //             .addTo(map);
-        //         console.log(res)
-        //         map.setCenter(res);
-        //         map.setZoom(19);
-        //     })
-        // }
-        //
-        // $('#submit').click(e => {
-        //     console.log('clicked')
-        //     e.preventDefault()
-        //     //capturing input
-        //     const newSpot = $('#search').val('')
-        //     //run geocode function with input
-        //     newGeoMark(newSpot, mapboxToken)
-        //     // clear input field
-        //     $('#search').val('')
-        //     const lat = e.lat
-        //     const lng = e.lng
-        //     coords = [lng, lat]
-        //     if(marker) {
-        //         marker.remove()
-        //     }
-        //     marker = new mapboxgl.Marker()
-        //         .setLngLat(coords)
-        //         .addTo(map);
-        //     // fetchWeather(lat, lng, 'imperial', openWeatherKey)
-        //     reverseGeoAddress(lat, lng, mapboxToken)
-        //     updateCards(e.lat, e.lng)
-        //
-        // })
-
-
-
-        //
-        // // Listening for click on map
-        // map.on('click', (e) => {
-        //     const lat = e.lngLat.lat
-        //     const lng = e.lngLat.lng
-        //     coords = [lng, lat]
-        //     if(marker) {
-        //         marker.remove()
-        //     }
-        //     marker = new mapboxgl.Marker()
-        //         .setLngLat(coords)
-        //         .addTo(map);
-        //     fetchWeather(lat, lng, 'imperial', openWeatherKey)
-        //     reverseGeoAddress(lat, lng, mapboxToken)
-        //
-        // })
-
-        // const reverseGeoAddress = (lat, lng, token) => {
-        //     reverseGeocode({lng: lng, lat: lat},  token).then(function(results) {
-        //         // logs the address for The Alamo
-        //         console.log(results);
-        //         const city = results.split(',')[1]
-        //         const state = results.split(',')[2].replace(/[0-9]/g, '');
-        //         console.log(city, state);
-        //     });
-        // }
-
     });
+
 })();

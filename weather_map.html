@@ -11,7 +11,6 @@
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js'></script>
     <!-- Mapbox CSS -->
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css' rel='stylesheet' />
-<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="css/weather-map.css">
 </head>
@@ -19,35 +18,26 @@
 <!--navbar-->
 <div class="container-fluid">
     <div class="row text-white" id="nav">
-        <div class="col">Forecast by Dave Spritz</div><div class="col"></div>
+        <div class="col">Forecast by Dave Spritz</div>
+        <div class="col">
+            <form id="search-form" action="#" method="get">
+                <label for="city">Enter a city name:</label>
+                <input type="text" id="search-input" name="city" />
+                <button type="submit" id="search-button">Search</button>
+            </form>
+        </div>
+
         <div class="col" id='city'></div>
     </div>
     <!--weather cards-->
     <div class="row justify-content-center justify-content-around mt-1" id="card">
     </div>
-    <!--search bar-->
-    <form class="mb-3 mt-3 text-white" id="search-bar">
-        <input type="text" class="form-control border-0" id="search">
-        <button id="submit" class="btn text-white">Where?</button>
-    </form>
+
     <!--map-->
     <div class="map mt-5" id='map'></div>
 </div>
 
-<!--pizzazz-->
-<!--Using HTML, CSS, jQuery, AJAX, and the OpenWeatherMap API, start by showing the current conditions for city you live in on your page.-->
 
-<!--Update your layout and AJAX request(s) to display a five day forecast for the city you live in.-->
-
-<!--If you want to add the icons the URLs for OpenWeatherMap's icons are formatted like: http://openweathermap.org/img/w/[icon].png where [icon] comes from the API response.-->
-
-<!--Refer to your Mapbox API exercise. Recreate the map below your 5 day forecast. Read through the documentation for the Mapbox API and figure out how to allow the user to drop a pin on any place on the map. Once the user drops a pin, grab its coordinates and feed those into your OpenWeatherMap API. Update the five-day forecast with the information from those coordinates (you should also get rid of your input boxes at this point).-->
-
-<!--Add a Mapbox text input to search by location and have the forecast update when a new location is searched.-->
-
-<!--As a bonus make sure you can update the marker's position to the new search result.-->
-
-<!--bootstrap & jquery-->
 
 <!--jquery cdn-->
 <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
