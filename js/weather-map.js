@@ -4,7 +4,7 @@
     mapboxgl.accessToken = mapboxToken;
     const map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/navigation-night-v1',
+        style: 'mapbox://styles/mapbox/dark-v11',
         zoom: 10,
         center: ([-85.75968, 38.25131])
     });
@@ -23,7 +23,7 @@
 
     }).done(function (data) {
         console.log('5 day forecast', data);
-        $("#city").append(`Location: ${data.city.name.toUpperCase()}`)
+        $("#city").empty().append(`Location: ${data.city.name.toUpperCase()}`)
         for (let i = 0; i < data.list.length; i = i + 8) {
             $("#cards").append(`
 <div id="cards">
@@ -124,7 +124,6 @@
 
                 } catch (err) {
                     console.error(err);
-                    console.log('jqXHR');
                     console.log('textStatus');
                 }
             });
