@@ -4,7 +4,7 @@
     mapboxgl.accessToken = mapboxToken;
     const map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v12',
+        style: 'mapbox://styles/mapbox/navigation-night-v1',
         zoom: 10,
         center: ([-85.75968, 38.25131])
     });
@@ -25,19 +25,24 @@
         console.log('5 day forecast', data);
         $("#city").append(`Location: ${data.city.name.toUpperCase()}`)
         for (let i = 0; i < data.list.length; i = i + 8) {
-            $("#card").append(`
-        <div class="card col">
+            $("#cards").append(`
+<div id="cards">
+      <div class="card">
             <div class="cardHeader"><p>${data.list[i].dt_txt.slice(0, 10)}</p></div>
             <hr>
-            <div class="temperature"><p>Temperature<br> Low : ${Math.round(data.list[i].main.temp_min)} °F   High : ${Math.round(data.list[i].main.temp_max)} °F</p></div>
+            <div class="card-body">
+            <div class="temperature"><p>Temperature<br> Low : ${Math.round(data.list[i].main.temp_min)}°F   High : ${Math.round(data.list[i].main.temp_max)}°F</p></div>
             <hr>
-            <div class="humidity "><p>Humidity: ${data.list[i].main.humidity} %</p></div>
+            <div class="humidity"><p>Humidity: ${data.list[i].main.humidity} %</p></div>
             <hr>
             <div class="real-feel"><p>Feels like: ${Math.round(data.list[i].main.feels_like)} °F</p></div>
             <hr>
-            <div><p>${data.list[i].weather[0].description.toUpperCase()}</p><br><img class="image" src = "http://openweathermap.org/img/w/${data.list[i].weather[0].icon}.png" alt='Weather icon'></div>
+            <div class="description"><p>${data.list[i].weather[0].description.toUpperCase()}</p><br><img class="image" src = "http://openweathermap.org/img/w/${data.list[i].weather[0].icon}.png" alt='Weather icon'></div>
             <hr>
-            <div class="wind"><p>Wind:${Math.round(data.list[i].wind.speed)} MPH</p></div>
+            <div class="wind"><p>Wind: ${Math.round(data.list[i].wind.speed)} MPH</p></div>
+            </div>
+            </div>
+            </div>
         </div>`);
         }
 
@@ -52,25 +57,29 @@
                 }).done(function (data) {
                     console.log(data)
                     //reset city:
-                    $("#city").text("");
-                    //reset cards:
-                    $("#card").text("");
+                    $("#city").empty();
+                    // //reset cards:
+                    $("#cards").empty();
                     $("#city").append(`Location: ${data.city.name.toUpperCase()}`)
                     for (let i = 0; i < data.list.length; i = i + 8) {
-                        $("#card").append(`
-      <div class="card col">
-            <div class="card"><p>${data.list[i].dt_txt.slice(0, 10)}</p></div>
+                        $("#cards").append(`
+      <div id="cards">
+      <div class="card">
+            <div class="cardHeader"><p>${data.list[i].dt_txt.slice(0, 10)}</p></div>
             <hr>
-           <div class="temperature"><p>Temperature<br> Low :${Math.round(data.list[i].main.temp_min)} °F  High :${Math.round(data.list[i].main.temp_max)} °F</p></div>
+            <div class="card-body">
+           <div class="temperature"><p>Temperature<br> Low :${Math.round(data.list[i].main.temp_min)}°F  High :${Math.round(data.list[i].main.temp_max)}°F</p></div>
             <hr>
             <div class="humidity"><p>Humidity:${data.list[i].main.humidity} %</p></div>
             <hr>
             <div class="real-feel"><p>Feels like:${Math.round(data.list[i].main.feels_like)} °F</p></div>
-            <hr>
+            <hr><div class="description">
             ${data.list[i].weather[0].description.toUpperCase()}<br>
             <img class="image" src = "http://openweathermap.org/img/w/${data.list[i].weather[0].icon}.png" alt='Weather icon'></div>
             <hr>
-            <div class="wind"><p>Wind:${Math.round(data.list[i].wind.speed)} MPH</p></div>
+            <div class="wind"><p>Wind: ${Math.round(data.list[i].wind.speed)} MPH</p></div>
+            </div>
+            </div>
         </div>`);
                     }
                 })
@@ -82,6 +91,7 @@
 
                 updateCards(lngLat.lat, lngLat.lng)
             }
+
             marker.on('dragend', onDragEnd);
 
             // Search for a city and update the map
@@ -105,12 +115,13 @@
                     const weatherResponse = await fetch(
                         `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${openWeatherKey}&units=metric`
                     );
-                    const weatherData = await weatherResponse.json();
-                    const {name, main} = weatherData;
+                    // const weatherData = await weatherResponse.json();
+                    // const {name, main} = weatherData;
 
                     new mapboxgl.Marker()
                         .setLngLat([lon, lat])
                         .addTo(map);
+
                 } catch (err) {
                     console.error(err);
                     console.log('jqXHR');
