@@ -5,7 +5,7 @@
     const map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/halcyonichermes/clh8a2ipk01ps01p443tphsrs',
-        zoom: 10,
+        zoom: 9,
         center: ([-85.75968, 38.25131])
     });
 
@@ -20,7 +20,7 @@
         APPID: openWeatherKey,
         q: "Louisville",
         units: "imperial"
-
+    // initial weather:
     }).done(function (data) {
         console.log('5 day forecast', data);
         $("#city").empty().append(`Location: ${data.city.name.toUpperCase()}`)
@@ -85,13 +85,13 @@
                 })
             }
 
+
             //Drag and load feature:
             function onDragEnd() {
                 const lngLat = marker.getLngLat();
 
                 updateCards(lngLat.lat, lngLat.lng)
             }
-
             marker.on('dragend', onDragEnd);
 
             // Search for a city and update the map
