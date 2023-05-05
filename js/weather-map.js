@@ -26,23 +26,23 @@
         $("#city").empty().append(`Location: ${data.city.name.toUpperCase()}`)
         for (let i = 0; i < data.list.length; i = i + 8) {
             $("#cards").append(`
-<div id="cards">
-      <div class="card">
-            <div class="cardHeader"><p>${data.list[i].dt_txt.slice(0, 10)}</p></div>
-            <hr>
-            <div class="card-body">
-            <div class="temperature"><p>Temperature<br> Low : ${Math.round(data.list[i].main.temp_min)}°F   High : ${Math.round(data.list[i].main.temp_max)}°F</p></div>
-            <hr>
-            <div class="humidity"><p>Humidity: ${data.list[i].main.humidity} %</p></div>
-            <hr>
-            <div class="real-feel"><p>Feels like: ${Math.round(data.list[i].main.feels_like)} °F</p></div>
-            <hr>
-            <div class="description"><p>${data.list[i].weather[0].description.toUpperCase()}</p><br><img class="image" src = "http://openweathermap.org/img/w/${data.list[i].weather[0].icon}.png" alt='Weather icon'></div>
-            <hr>
-            <div class="wind"><p>Wind: ${Math.round(data.list[i].wind.speed)} MPH</p></div>
-            </div>
-            </div>
-            </div>
+                <div id="cards">
+                    <div class="card">
+                        <div class="cardHeader"><p>${data.list[i].dt_txt.slice(0, 10)}</p></div>
+                        <hr>
+                            <div class="card-body">
+                            <div class="temperature"><p>Temperature<br> Low : ${Math.round(data.list[i].main.temp_min)}°F   High : ${Math.round(data.list[i].main.temp_max)}°F</p></div>
+                            <hr>
+                            <div class="humidity"><p>Humidity: ${data.list[i].main.humidity} %</p></div>
+                            <hr>
+                            <div class="real-feel"><p>Feels like: ${Math.round(data.list[i].main.feels_like)} °F</p></div>
+                            <hr>
+                            <div class="description"><p>${data.list[i].weather[0].description.toUpperCase()}</p><br><img class="image" src = "http://openweathermap.org/img/w/${data.list[i].weather[0].icon}.png" alt='Weather icon'></div>
+                            <hr>
+                            <div class="wind"><p>Wind: ${Math.round(data.list[i].wind.speed)} MPH</p></div>
+                        </div>
+                    </div>
+                </div>
         </div>`);
         }
 
@@ -63,24 +63,24 @@
                     $("#city").append(`Location: ${data.city.name.toUpperCase()}`)
                     for (let i = 0; i < data.list.length; i = i + 8) {
                         $("#cards").append(`
-      <div id="cards">
-      <div class="card">
-            <div class="cardHeader"><p>${data.list[i].dt_txt.slice(0, 10)}</p></div>
-            <hr>
-            <div class="card-body">
-           <div class="temperature"><p>Temperature<br> Low :${Math.round(data.list[i].main.temp_min)}°F  High :${Math.round(data.list[i].main.temp_max)}°F</p></div>
-            <hr>
-            <div class="humidity"><p>Humidity:${data.list[i].main.humidity} %</p></div>
-            <hr>
-            <div class="real-feel"><p>Feels like:${Math.round(data.list[i].main.feels_like)} °F</p></div>
-            <hr><div class="description">
-            ${data.list[i].weather[0].description.toUpperCase()}<br>
-            <img class="image" src = "http://openweathermap.org/img/w/${data.list[i].weather[0].icon}.png" alt='Weather icon'></div>
-            <hr>
-            <div class="wind"><p>Wind: ${Math.round(data.list[i].wind.speed)} MPH</p></div>
-            </div>
-            </div>
-        </div>`);
+                        <div id="cards">
+                            <div class="card">
+                                 <div class="cardHeader"><p>${data.list[i].dt_txt.slice(0, 10)}</p></div>
+                                    <hr>
+                                    <div class="card-body">
+                                    <div class="temperature"><p>Temperature<br> Low :${Math.round(data.list[i].main.temp_min)}°F  High :${Math.round(data.list[i].main.temp_max)}°F</p></div>
+                                    <hr>
+                                    <div class="humidity"><p>Humidity:${data.list[i].main.humidity} %</p></div>
+                                    <hr>
+                                    <div class="real-feel"><p>Feels like:${Math.round(data.list[i].main.feels_like)} °F</p></div>
+                                    <hr><div class="description">
+                                    ${data.list[i].weather[0].description.toUpperCase()}<br>
+                                    <img class="image" src = "http://openweathermap.org/img/w/${data.list[i].weather[0].icon}.png" alt='Weather icon'></div>
+                                    <hr>
+                                    <div class="wind"><p>Wind: ${Math.round(data.list[i].wind.speed)} MPH</p></div>
+                                 </div>
+                            </div>
+                        </div>`);
                     }
                 })
             }
@@ -89,7 +89,6 @@
             //Drag and load feature:
             function onDragEnd() {
                 const lngLat = marker.getLngLat();
-
                 updateCards(lngLat.lat, lngLat.lng)
             }
             marker.on('dragend', onDragEnd);
@@ -112,9 +111,9 @@
                     const lat = center[1];
                     const lon = center[0];
                     console.log(lat, lon);
-                    const weatherResponse = await fetch(
-                        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${openWeatherKey}&units=metric`
-                    );
+                    // const weatherResponse = await fetch(
+                    //     `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${openWeatherKey}&units=metric`
+                    // );
                     // const weatherData = await weatherResponse.json();
                     // const {name, main} = weatherData;
 
