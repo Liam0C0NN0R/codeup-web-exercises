@@ -21,10 +21,16 @@ fetch('https://jsonplaceholder.typicode.com/posts')
 
 
 
-// fetch(url, {headers: {'Authorization': "githubKey"}})
 
 function getLastCommitDate(username) {
-    return fetch(`https://api.github.com/users/${username}/events`)
+    const url = `https://api.github.com/users/${username}/events`;
+    const token = githubKey;
+    const options = {
+        headers: {
+            'Authorization': `token ${token}`
+        }
+    };
+    return fetch(url, options)
         .then(response => response.json())
         .then(events => {
             const lastPushEvent = events.find(event => event.type === "PushEvent");
@@ -38,6 +44,7 @@ function getLastCommitDate(username) {
 }
 
 console.log(getLastCommitDate('Liam0C0NN0R'));
+
 
 function wait(milliseconds) {
     return new Promise(resolve => {
