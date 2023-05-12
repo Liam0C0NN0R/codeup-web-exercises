@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Konami Code</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/konami.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
+
+<body>
+<div class="fade-in-text">
+    <h1 class="title">ENTER THE CODE TO CONTINUE</h1>
+<!--    <form id="Form">-->
+
+<!--        <input type="text"><br><br>-->
+
+<!--        <input type="button" onclick="clearInput()" value="Try Again">-->
+<!--    </form>-->
+</div>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous">
+</script>
+<script src="/js/jquery.js"></script>
+<script>
+    const Toccata = new Audio("assets/050AToccataintoBloodSoakedDarkness.mp3");
+    const deathSong = new Audio("assets/022ScarletFine.mp3");
+
+    // $(document).ready(function(){
+    //     $('assets/castlevania_5.gif').each(function(){
+    //         var maxWidth = 1660;
+    //         var ratio = 0;
+    //         var img = $(this);
+    //
+    //         if(img.width() > maxWidth){
+    //             ratio = img.height() / img.width();
+    //             img.attr('width', maxWidth);
+    //             img.attr('height', (maxWidth*ratio));
+    //         }
+    //     });
+    // });
+
+        const gameOn = ("assets/castle-entry.gif")
+    const gameOver = ("assets/headstone-700.gif")
+
+
+        function clearInput() {
+            document.getElementById("Form").reset();
+        }
+
+        "use strict";
+        $(document).keyup(function (event) {
+            console.log(event.keyCode);
+        });
+        var konamiCode = [];
+        var theCode = [38, 38, 40, 40, 37, 39, 37, 39, 65, 66];
+        $(document).keyup(function (event) {
+            if (event.keyCode) {
+                konamiCode.push(event.keyCode);
+                console.log(konamiCode);
+                if (konamiCode.join("") == theCode.join('')) {
+                    konamiCode = [];
+                    alert('You added 30 lives! Prepare to lose them!');
+                    if (true) ;
+                    $("body").css("background", 'url("' + gameOn + '"');
+                    $(".Konami").toggle("puff");
+                    Toccata.play();
+
+
+                }
+                if (konamiCode.length > theCode.length) {
+                    // $("body").css("background-color", "Black");
+                    $("body").css("background", 'url("' + gameOver + '"');
+                    alert("GAME OVER");
+                    $(".Konami").toggle("puff");
+                    deathSong.play();
+                    konamiCode = []
+                }
+            }
+        });
+        $("confirm").click(e => Toccata.play());
+</script>
+
+</body>
+</html>

@@ -50,33 +50,28 @@
                     var html = "";
 
                     movies.forEach((movie) => {
-                        html += '<div class="movie" data-id="' + movie.id + '">';
-                        html += "<h2>" + movie.title + "</h2>";
-                        html += "<p>Rating: " + movie.rating + "</p>";
-                        html += "<p>Genre: " + movie.genre + "</p>";
-                        html += '<img src="" class="movie-poster" alt="Movie Poster" />';
+                        html += `<a href="#" data-id="${movie.id}">
+          <img src="" class="movie-poster" alt="Movie Poster" width="500" />
+          <div class="movie-info d-none">
+            <h5>${movie.title}</h5>
+            <p>Rating: ${movie.rating}</p>
+            <p>Genre: ${movie.genre}</p>
+            <button class="edit-movie-btn" data-id="${movie.id}">Edit</button>
+            <button class="delete-movie-btn" data-id="${movie.id}">Delete</button>
+          </div>
+        </a>`;
 
                         // Get the movie data from the TMDb API and set the poster
-                        getTMDbMovieData(movie.title, function (err, tmdbMovieData) {
+                        getTMDbMovieData(movie.title, (err, tmdbMovieData) => {
                             if (!err) {
                                 var posterPath = "https://image.tmdb.org/t/p/w500" + tmdbMovieData.poster_path;
-                                $('.movie[data-id="' + movie.id + '"] .movie-poster').attr("src", posterPath);
+                                $(`a[data-id="${movie.id}"] .movie-poster`).attr("src", posterPath);
                             } else {
                                 console.error("Error fetching TMDb movie data:", err);
                             }
                         });
-
-                        html +=
-                            '<button class="edit-movie-btn" data-id="' +
-                            movie.id +
-                            '">Edit</button>';
-                        html +=
-                            '<button class="delete-movie-btn" data-id="' +
-                            movie.id +
-                            '">Delete</button>';
-                        html += "</div>";
                     });
-                    $("#movies").html(html);
+                    $("#rotator").html(html);
 
                     // Add click event listener for delete movie button
                     $(".delete-movie-btn").click(function () {
@@ -174,6 +169,18 @@
                 })
             });
         });
+        $(document).on("click", "#rotator a", function (e) {
+            e.preventDefault();
+
+            // Toggle the display of movie info
+            $(this).find(".movie-info").toggleClass("d-none");
+
+            // Hide other movie info
+            $("#rotator a")
+                .not(this)
+                .find(".movie-info")
+                .addClass("d-none");
+        });
 
         // Add event listener for closing the edit movie modal and enable the edit movie button
         $('#editMovieModal .close').click(function () {
@@ -268,6 +275,48 @@
             // Enable the add button
             $('#add-movie-btn').prop("disabled", false);
         });
+        function startCarouselRotation() {
+            const rotateComplete = function (e) {
+                target.style.animationName = "";
+                target.insertBefore(arr[arr.length - 1], arr[0]);
+                setTimeout(function (el) {
+                    el.style.animationName = "rotator";
+                }, 0, target);
+            };
+
+            var target = document.getElementById("rotator");
+            var arr = target.getElementsByTagName("a");
+
+            target.addEventListener("animationend", rotateComplete, false);
+            target.addEventListener("webkitAnimationEnd", rotateComplete, false);
+            target.addEventListener("MSAnimationEnd", rotateComplete, false);
+        }
+
+        $(document).ready(function () {
+            $("#loading").show();
+            $("#movies").hide();
+
+            getMovies();
+
+            startCarouselRotation();
+        });
+        window.addEventListener("DOMContentLoaded", function(e) {
+            var rotateComplete = function(e) {
+                target.style.webkitAnimationName = "";
+                target.insertBefore(arr[arr.length-1], arr[0]);
+                setTimeout(function(el) {
+                    el.style.webkitAnimationName = "rotator";
+                }, 0, target);
+            };
+
+            var target = document.getElementById("rotator");
+            var arr = target.getElementsByTagName("a");
+
+            target.addEventListener("webkitAnimationEnd", rotateComplete, false);
+            target.addEventListener("animationend", rotateComplete, false);
+            target.addEventListener("MSAnimationEnd", rotateComplete, false);
+        }, false);
+
     });
 
     // Get button:
@@ -290,4 +339,18 @@
         document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
     }
     $('#myBtn').click(topFunction);
+    function toggleMode() {
+        var body = document.body;
+        var switchImg = document.getElementById('toggle-switch');
+
+        if (body.className === "light") {
+            body.className = "dark";
+            switchImg.src = "img/light-switch-ON.png";
+        } else {
+            body.className = "light";
+            switchImg.src = "img/switch-clipart-OFF.png";
+        }
+    }
+    document.getElementById('toggle-switch').addEventListener('click', toggleMode);
+
 })();
