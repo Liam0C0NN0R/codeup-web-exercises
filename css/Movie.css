@@ -36,7 +36,8 @@ body > p {
 }
 
 body > .carousel {
-    padding-top: 125px;
+    margin-top: 5em;
+    padding-top: 10px;
 }
 
 .carousel {

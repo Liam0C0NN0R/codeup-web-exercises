@@ -29,8 +29,8 @@
                     const carouselSlider = this.carousel.getElementsByClassName('carousel__slider')[0];
                 }
                 this.items = this.carousel.getElementsByClassName('carousel__slider__item');
-                this.prevBtn = this.carousel.getElementsByClassName('carousel__prev')[0];
-                this.nextBtn = this.carousel.getElementsByClassName('carousel__next')[0];
+                this.prevBtn = this.carousel.querySelector('.carousel__prev');
+                this.nextBtn = this.carousel.querySelector('.carousel__next');
                 this.movieData = [];
                 this.currentPage = initialPage;
                 this.width = null;
@@ -40,22 +40,28 @@
                 this.currIndex = 0;
                 this.interval = null;
                 this.intervalTime = 4000;
+                this.getRandomMovies(this.currentPage, () => {
+                    this.init();
+                    this.timer();
+                });
+                this.bindEvents();
                 // this.observer = new IntersectionObserver(this.handleIntersection, {
                 //     root: this.carousel,
                 //     rootMargin: '0px',
                 //     threshold: 0.1
                 // });
-                this.init();
+                // this.init();
             }
 
             init() {
                 setTimeout(() => {
-                this.resize();
-                this.move(Math.floor(this.items.length / 2));
-            }, 300);
-                this.getRandomMovies(this.currentPage);
-                this.bindEvents();
-                this.timer();
+                    this.resize();
+                    this.move(Math.floor(this.items.length / 2));
+                }, 300);
+                // this.getRandomMovies(this.currentPage, () => {
+                //     this.bindEvents();
+                //     this.timer();
+                // });
 
             }
 
@@ -91,7 +97,10 @@
                 }
 
                 this.slider.style.transform = "translate3d(" + (index * -this.width + window.innerWidth / 2) + "px, 0, 0)";
-                if (index >= this.movieData.length - 10) {
+                if (index >= this.movieData.length - 20) {
+                    this.getRandomMovies(++this.currentPage);
+                }
+                if (index >= this.movieData.length - 20 && this.currentPage < 500) {
                     this.getRandomMovies(++this.currentPage);
                 }
             }
@@ -115,14 +124,17 @@
 
 
             bindEvents() {
-                window.onresize = () => this.resize();
-                this.prevBtn.addEventListener('click', () => {
+                window.addEventListener('resize', () => this.resize());
+                this.prevBtn.addEventListener('click', (event) => {
+                    event.preventDefault();
                     this.prev();
                 });
-                this.nextBtn.addEventListener('click', () => {
+                this.nextBtn.addEventListener('click', (event) => {
+                    event.preventDefault();
                     this.next();
                 });
             }
+
 
             // handleIntersection(entries, observer) {
             //     entries.forEach(entry => {
@@ -136,7 +148,7 @@
             // }
 
 
-            getRandomMovies(page) {
+            getRandomMovies(page, callback) {
                 // Generate a random page between 1 and 500 (as TMDb has a maximum of 500 pages)
                 const randomPage = Math.floor(Math.random() * 500) + 1;
 
@@ -188,12 +200,17 @@
 
                         carouselSlider.appendChild(carouselItem);
                         // this.observer.observe(carouselItem);
-                        console.log(movie);
+                        this.items = this.carousel.getElementsByClassName('carousel__slider__item');
 
                     });
-                    if (page === 1) {
-                        // this.init();
-                    }
+                    if (callback) {
+                        callback();
+                    };
+                    this.init();
+                    // this.currIndex = this.items.length - 1;
+                    // if (page === 1) {
+                    //     this.bindEvents();
+                    // }
                 });
             }
         }
