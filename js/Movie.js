@@ -1,18 +1,103 @@
-(function () {
+(function() {
     "use strict";
-    const url = "https://light-flax-icebreaker.glitch.me/movies";
 
-    // Movie poster function
-    function getTMDbMovieData(title, callback) {
+    class Carousel {
+        constructor(carouselElement, initialPage) {
+            this.carousel = carouselElement;
+            this.slider = this.carousel.getElementsByClassName('carousel__slider')[0];
+            this.items = this.carousel.getElementsByClassName('carousel__slider__item');
+            this.prevBtn = this.carousel.getElementsByClassName('carousel__prev')[0];
+            this.nextBtn = this.carousel.getElementsByClassName('carousel__next')[0];
+            this.movieData = [];
+            this.currentPage = initialPage;
+            this.width = null;
+            this.height = null;
+            this.totalWidth = null;
+            this.margin = 20;
+            this.currIndex = 0;
+            this.interval = null;
+            this.intervalTime = 4000;
+            this.init();
+        }
+        init() {
+            this.resize();
+            this.move(Math.floor(this.items.length / 2));
+            this.bindEvents();
+            this.timer();
+            this.getRandomMovies(this.currentPage);
+        }
+        resize() {
+            this.width = Math.max(window.innerWidth * .25, 275);
+            this.height = window.innerHeight * .5;
+            this.totalWidth = this.width * this.items.length;
+
+            this.slider.style.width = this.totalWidth + "px";
+
+            for(let i = 0; i < this.items.length; i++) {
+                let item = this.items[i];
+                item.style.width = (this.width - (this.margin * 2)) + "px";
+                item.style.height = this.height + "px";
+            }
+        }
+
+    function move(index) {
+
+        if(index < 0) index = items.length - 1;
+        if(index >= items.length) index = 0;
+        currIndex = index;
+
+        for(var i = 0; i < items.length; i++) {
+            let item = items[i],
+                box = item.getElementsByClassName('item__3d-frame')[0];
+            if(i == (index - 1)) {
+                item.classList.add('carousel__slider__item--active');
+                box.style.transform = "perspective(1200px)";
+            } else {
+                item.classList.remove('carousel__slider__item--active');
+                box.style.transform = "perspective(1200px) rotateY(" + (i < index ? 40 : -40) + "deg)";
+            }
+        }
+
+        slider.style.transform = "translate3d(" + (index * -width + window.innerWidth / 2) + "px, 0, 0)";
+        if(index >= movieData.length - 10) {
+            getRandomMovies(++currentPage);
+        }
+    }
+
+    function timer() {
+        clearInterval(interval);
+        interval = setInterval(() => {
+            move(++currIndex);
+        }, intervalTime);
+    }
+
+    function prev() {
+        move(--currIndex);
+        timer();
+    }
+
+    function next() {
+        move(++currIndex);
+        timer();
+    }
+
+
+    function bindEvents() {
+        window.onresize = resize;
+        prevBtn.addEventListener('click', () => { prev(); });
+        nextBtn.addEventListener('click', () => { next(); });
+    }
+
+    function getRandomTMDbMovieData(page, callback) {
         var apiKey = tmdbKey;
-        var apiUrl = "https://api.themoviedb.org/3/search/movie?api_key=" + apiKey + "&query=" + encodeURIComponent(title);
+        var apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${page}`;
 
         $.ajax({
             method: "GET",
             url: apiUrl,
             success: function (data) {
                 if (data.results && data.results.length > 0) {
-                    callback(null, data.results[0]);
+                    callback(null, data.results);
                 } else {
                     callback("No movie data found.");
                 }
@@ -22,335 +107,64 @@
             }
         });
     }
-    $(window).on('load', function() {
-        // When the page has loaded, hide the overlay
-        setTimeout(function(){
-            $('#loadingOverlay').fadeOut();
-        }, 2000);
-    });
-    // Main function to execute when the document is ready
-    $(document).ready(function () {
-        // Display a "loading..." message and hide the movie list
-        $("#loading").show();
-        $("#movies").hide();
+    function getRandomMovies(page) {
+        // Generate a random page between 1 and 500 (as TMDb has a maximum of 500 pages)
+        var randomPage = Math.floor(Math.random() * 500) + 1;
 
+        getRandomTMDbMovieData(randomPage, (err, tmdbMovieData) => {
+            if (err) {
+                console.error("Error fetching TMDb movie data:", err);
+                return;
+            }
 
+            // Hide the "loading..." message and show the movie list
+            $("#loading").hide();
+            $("#randomMovies").show();
+            // Add the fetched movies to the movieData array
+            movieData = movieData.concat(tmdbMovieData);
 
-        // Function to get all movies and render them
-        function getMovies() {
-            fetch(url)
-                .then((res) => res.json())
-                .then((data) => {
-                    // Hide the "loading..." message and show the movie list
-                    $("#loading").hide();
-                    $("#movies").show();
+            // Get the carousel element
+            var carouselSlider = document.getElementsByClassName('carousel__slider')[0];
 
-                    // Generate the HTML for the movie list
-                    var movies = data;
-                    var html = "";
+            // Only take the first 50 movies
+            tmdbMovieData.slice(0, 50).forEach((movie) => {
+                var posterPath = "https://image.tmdb.org/t/p/w500" + movie.poster_path;
 
-                    movies.forEach((movie) => {
-                        html += `<a href="#" data-id="${movie.id}">
-          <img src="" class="movie-poster" alt="Movie Poster" width="500" />
-          <div class="movie-info d-none">
-            <h5>${movie.title}</h5>
-            <p>Rating: ${movie.rating}</p>
-            <p>Genre: ${movie.genre}</p>
-            <button class="edit-movie-btn" data-id="${movie.id}">Edit</button>
-            <button class="delete-movie-btn" data-id="${movie.id}">Delete</button>
-          </div>
-        </a>`;
+                // Create a new carousel item
+                var carouselItem = document.createElement('div');
+                carouselItem.classList.add('carousel__slider__item');
 
-                        // Get the movie data from the TMDb API and set the poster
-                        getTMDbMovieData(movie.title, (err, tmdbMovieData) => {
-                            if (!err) {
-                                var posterPath = "https://image.tmdb.org/t/p/w500" + tmdbMovieData.poster_path;
-                                $(`a[data-id="${movie.id}"] .movie-poster`).attr("src", posterPath);
-                            } else {
-                                console.error("Error fetching TMDb movie data:", err);
-                            }
-                        });
-                    });
-                    $("#rotator").html(html);
+                // Create a new 3D frame
+                var frame = document.createElement('div');
+                frame.classList.add('item__3d-frame');
+                carouselItem.appendChild(frame);
 
-                    // Add click event listener for delete movie button
-                    $(".delete-movie-btn").click(function () {
-                        var movieId = $(this).data("id");
+                // Create a new front box with the movie poster as the background image
+                var frontBox = document.createElement('div');
+                frontBox.classList.add('item__3d-frame__box', 'item__3d-frame__box--front');
+                frontBox.style.backgroundImage = `url(${posterPath})`;
+                frame.appendChild(frontBox);
 
-                        // Confirm that the user wants to delete the movie
-                        if (confirm("Are you sure you want to delete this movie?")) {
-                            // Make an AJAX request to delete the movie
-                            // Disable the delete button
-                            $(this).prop("disabled", true);
-                            $.ajax({
-                                method: "DELETE",
-                                url: url + "/" + movieId,
-                                success: function () {
-                                    // Re-enable the delete button
-                                    $(this).prop("disabled", false);
-                                    // Remove the movie from the UI
-                                    $(".movie[data-id='" + movieId + "']").remove();
-                                    // Render all movies again
-                                    getMovies();
-                                },
-                                error: function () {
-                                    // Re-enable the delete button
-                                    $(this).prop("disabled", false);
-                                    alert("Error deleting movie");
-                                },
-                            });
-                        }
-                    });
-                })
-                .catch((error) => {
-                    console.error("Error fetching movies:", error);
-                });
-        }
+                // Create a new left box
+                var leftBox = document.createElement('div');
+                leftBox.classList.add('item__3d-frame__box', 'item__3d-frame__box--left');
+                frame.appendChild(leftBox);
 
-        // Call the function to get and render all movies
-        getMovies();
+                // Create a new right box
+                var rightBox = document.createElement('div');
+                rightBox.classList.add('item__3d-frame__box', 'item__3d-frame__box--right');
+                frame.appendChild(rightBox);
 
-        // Add click event listener for edit movie button
-        $(document).on('click', '.edit-movie-btn', function () {
-            // Disable the edit button
-            $(this).prop("disabled", true);
-
-            // Get the movie ID
-            var movieId = $(this).data('id');
-
-            // Get the movie data from the server
-            $.ajax({
-                method: 'GET',
-                url: url + '/' + movieId,
-                success: function (movie) {
-                    // Enable the edit button
-                    $(this).prop("disabled", false);
-                    // Set the form values
-                    $('#edit-movie-id').val(movie.id);
-                    $('#edit-movie-title').val(movie.title);
-                    $('#edit-movie-rating').val(movie.rating);
-
-                    // Show the edit movie modal dialog
-                    $('#editMovieModal').modal('show');
-                }
+                // Append the carousel item to the carousel
+                carouselSlider.appendChild(carouselItem);
             });
-
-            // Add click event listener for save edited movie button
-            $('#save-edited-movie-btn').click(function () {
-                // Get the form data
-                var formData = $('#editMovieForm').serialize();
-                console.log(formData);
-
-                // Send a PUT request to update the movie
-                $.ajax({
-                    type: 'PUT',
-                    url: 'https://light-flax-icebreaker.glitch.me/movies/' + $('#editMovieForm input[name="id"]').val(),
-                    data: formData,
-                    success: function () {
-                        // Get the movie data from the TMDb API and set the poster
-                        getTMDbMovieData($('#addMovieForm input[name="title"]').val(), function (err, tmdbMovieData) {
-                            if (!err) {
-                                var posterPath = "https://image.tmdb.org/t/p/w500" + tmdbMovieData.poster_path;
-                                movie.poster = posterPath;
-                            } else {
-                                console.error("Error fetching TMDb movie data:", err);
-                            }
-
-                            // Reload the movies list
-                            getMovies();
-                        });
-
-                        // Close the modal
-                        $('#editMovieModal').modal('hide');
-                    },
-                    error: function (error) {
-                        console.log(error);
-                    }
-                })
-            });
+            if(page === 1) { // Only call init() the first time
+                init();
+            }
         });
-        $(document).on("click", "#rotator a", function (e) {
-            e.preventDefault();
-
-            // Toggle the display of movie info
-            $(this).find(".movie-info").toggleClass("d-none");
-
-            // Hide other movie info
-            $("#rotator a")
-                .not(this)
-                .find(".movie-info")
-                .addClass("d-none");
-        });
-
-        // Add event listener for closing the edit movie modal and enable the edit movie button
-        $('#editMovieModal .close').click(function () {
-            $('#editMovieModal').modal('hide');
-            $('.edit-movie-btn').prop("disabled", false);
-        });
-
-        // Add event listener for resetting the edit movie form when the modal is hidden
-        $('#editMovieModal').on('hidden.bs.modal', function () {
-            $('#editMovieForm')[0].reset();
-            $('.edit-movie-btn').prop("disabled", false);
-        });
-
-        // Add event listener for the cancel button in the edit movie modal
-        $('#editMovieModal #cancel-edited-movie-btn').click(function () {
-            // Reset the form
-            $('#editMovieForm')[0].reset();
-            // Close the modal
-            $('#editMovieModal').modal('hide');
-            $('.edit-movie-btn').prop("disabled", false);
-        });
-
-        // Add event listener for the add movie button
-        $('#add-movie-btn').click(function (e) {
-            e.preventDefault();
-            // Disable the submit button
-            $(this).prop("disabled", true);
-            console.log('add movie clicked');
-            // Show the add movie modal form
-            $('#addMovieModal').modal('show');
-        });
-
-        // Add event listener for the add movie button
-        $('#submit-movie-btn').click(function (e) {
-            e.preventDefault();
-            // Disable the submit button
-            $(this).prop("disabled", true);
-            console.log('submit movie clicked');
-            // Get the form data
-            var formData = $('#addMovieForm').serialize();
-
-            // Send a POST request to the server to add the movie
-            $.ajax({
-                type: 'POST',
-                url: 'https://light-flax-icebreaker.glitch.me/movies',
-                data: formData,
-                success: function (response) {
-                    // Enable the submit button
-                    $(this).prop("disabled", false);
-                    // Enable the add button
-                    $('#add-movie-btn').prop("disabled", false);
-                    // Reload the movies list
-                    getMovies();
-                    // Close the modal
-                    $('#addMovieModal').modal('hide');
-                },
-                error: function (error) {
-                    // Enable the submit button
-                    $(this).prop("disabled", false);
-                    // Enable the add button
-                    $('#add-movie-btn').prop("disabled", false);
-                    console.log(error);
-                }
-            });
-        });
-        // Add event listener for closing the add movie modal
-        $('.modal-header .close').click(function () {
-            $('#addMovieModal').modal('hide');
-            // Enable the submit button
-            $('#submit-movie-btn').prop("disabled", false);
-            // Enable the add button
-            $('#add-movie-btn').prop("disabled", false);
-        });
-
-        // Add event listener for resetting the add movie form when the modal is hidden
-        $('#addMovieModal').on('hidden.bs.modal', function () {
-            $('#addMovieForm')[0].reset();
-            // Enable the submit button
-            $('#submit-movie-btn').prop("disabled", false);
-            // Enable the add button
-            $('#add-movie-btn').prop("disabled", false);
-        });
-
-        // Add event listener for the cancel button in the add movie modal
-        $('#cancel-movie-btn').click(function () {
-            // Reset the form
-            $('#addMovieForm')[0].reset();
-            // Close the modal
-            $('#addMovieModal').modal('hide');
-            // Enable the submit button
-            $('#submit-movie-btn').prop("disabled", false);
-            // Enable the add button
-            $('#add-movie-btn').prop("disabled", false);
-        });
-        function startCarouselRotation() {
-            const rotateComplete = function (e) {
-                target.style.animationName = "";
-                target.insertBefore(arr[arr.length - 1], arr[0]);
-                setTimeout(function (el) {
-                    el.style.animationName = "rotator";
-                }, 0, target);
-            };
-
-            var target = document.getElementById("rotator");
-            var arr = target.getElementsByTagName("a");
-
-            target.addEventListener("animationend", rotateComplete, false);
-            target.addEventListener("webkitAnimationEnd", rotateComplete, false);
-            target.addEventListener("MSAnimationEnd", rotateComplete, false);
-        }
-
-        $(document).ready(function () {
-            $("#loading").show();
-            $("#movies").hide();
-
-            getMovies();
-
-            startCarouselRotation();
-        });
-        window.addEventListener("DOMContentLoaded", function(e) {
-            var rotateComplete = function(e) {
-                target.style.webkitAnimationName = "";
-                target.insertBefore(arr[arr.length-1], arr[0]);
-                setTimeout(function(el) {
-                    el.style.webkitAnimationName = "rotator";
-                }, 0, target);
-            };
-
-            var target = document.getElementById("rotator");
-            var arr = target.getElementsByTagName("a");
-
-            target.addEventListener("webkitAnimationEnd", rotateComplete, false);
-            target.addEventListener("animationend", rotateComplete, false);
-            target.addEventListener("MSAnimationEnd", rotateComplete, false);
-        }, false);
-
-    });
-
-    // Get button:
-    let mybutton = document.getElementById("myBtn");
-
-// scrolls down from the top of the document, show the button
-    window.onscroll = function() {scrollFunction()};
-
-    function scrollFunction() {
-        if (document.body.scrollTop > 1000 || document.documentElement.scrollTop > 1000) {
-            mybutton.style.display = "block";
-        } else {
-            mybutton.style.display = "none";
-        }
     }
+    var carousel1 = new Carousel(document.getElementById('carousel1'), 1);
+    var carousel2 = new Carousel(document.getElementById('carousel2'), 2);
 
-// When the user clicks on the button, scroll to the top of the document
-    function topFunction() {
-        document.body.scrollTop = 0; // For Safari
-        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-    }
-    $('#myBtn').click(topFunction);
-    function toggleMode() {
-        var body = document.body;
-        var switchImg = document.getElementById('toggle-switch');
-
-        if (body.className === "light") {
-            body.className = "dark";
-            switchImg.src = "img/light-switch-ON.png";
-        } else {
-            body.className = "light";
-            switchImg.src = "img/switch-clipart-OFF.png";
-        }
-    }
-    document.getElementById('toggle-switch').addEventListener('click', toggleMode);
 
 })();

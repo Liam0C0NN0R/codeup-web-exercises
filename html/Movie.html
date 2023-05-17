@@ -13,23 +13,76 @@
 </head>
 <body class="light">
 <div class="sticky-tab">
-    <img src="../img/switch-clipart-OFF.png" id="toggle-switch">
+    <img src="../img/light-switch-ON.png" id="toggle-switch">
 </div>
-    <!--Loading Image-->
-    <div id="loadingOverlay"
-         style="position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255,255,255,0.8); display:flex; justify-content:center; align-items:center; z-index:9999;">
-        <img id="loadingImage" src="../img/pngwing.com.png" alt="Loading..."/>
-    </div>
+<div id="tabs">
+    <button id="randomMoviesTab">Random Movies</button>
+    <button id="myMoviesTab">My Movies</button>
+</div>
+
+<!--    &lt;!&ndash;Loading Image&ndash;&gt;-->
+<!--    <div id="loadingOverlay"-->
+<!--         style="position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255,255,255,0.8); display:flex; justify-content:center; align-items:center; z-index:9999;">-->
+<!--        <img id="loadingImage" src="../img/pngwing.com.png" alt="Loading..."/>-->
+<!--    </div>-->
     <!--Movie List Div-->
     <div class="h1">
         <h1>Movie List</h1>
     </div>
 <!--    <div class="list-body">-->
         <div id="loading">Loading...</div>
-        <div id="movies" style="display: none">
-            <div id="rotator" style="-webkit-animation-name: rotator;"></div>
+<!-- Random Movies -->
+<p>3D Carousel/Slider1!</p>
+<div class="carousel" id="carousel1">
+    <div class="carousel__body">
+        <div class="carousel__prev">
+            <i class="far fa-angle-left"></i>
         </div>
-<!--    </div>-->
+        <div class="carousel__next">
+            <i class="far fa-angle-right"></i>
+        </div>
+        <div class="carousel__slider">
+            <!-- Repeat this section for each item -->
+            <div class="carousel__slider__item">
+                <div class="item__3d-frame">
+                    <div class="item__3d-frame__box item__3d-frame__box--front">
+                    </div>
+                    <div class="item__3d-frame__box item__3d-frame__box--left"></div>
+                    <div class="item__3d-frame__box item__3d-frame__box--right"></div>
+                </div>
+            </div>
+            <!-- End of repeated section -->
+        </div>
+    </div>
+</div>
+<p>3D Carousel/Slider2!</p>
+<div class="carousel" id="carousel2">
+    <div class="carousel__body">
+        <div class="carousel__prev">
+            <i class="far fa-angle-left"></i>
+        </div>
+        <div class="carousel__next">
+            <i class="far fa-angle-right"></i>
+        </div>
+        <div class="carousel__slider">
+            <!-- Repeat this section for each item -->
+            <div class="carousel__slider__item">
+                <div class="item__3d-frame">
+                    <div class="item__3d-frame__box item__3d-frame__box--front">
+                    </div>
+                    <div class="item__3d-frame__box item__3d-frame__box--left"></div>
+                    <div class="item__3d-frame__box item__3d-frame__box--right"></div>
+                </div>
+            </div>
+            <!-- End of repeated section -->
+        </div>
+    </div>
+</div>
+
+<!-- Personal Movies -->
+<div id="myMovies" style="display: none">
+    <!-- Content will be added here dynamically -->
+</div>
 
     <!--Add Movie Button-->
     <div class="text-center">
