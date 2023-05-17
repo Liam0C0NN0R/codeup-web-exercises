@@ -127,6 +127,11 @@ body > .carousel {
     width: 100%;
     color: var(--box-border);
 }
+.carousel__slider__item .item__3d-frame__box--front {
+    width: 100%;  /* Or whatever width you want */
+    height: 100%;  /* Or whatever height you want */
+}
+
 
 .carousel__slider__item .item__3d-frame__box--right, .carousel__slider__item .item__3d-frame__box--left {
     top: 0;
