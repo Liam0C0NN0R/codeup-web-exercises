@@ -54,7 +54,7 @@
                 this.carousel = carouselElement;
                 this.previousMovies = [];
                 this.items = carouselItems;
-                this.carouselID = carouselID;
+                this.carouselID = 'carousel' + carouselID;
                 this.slideDirection = slideDirection;
                 this.currIndex = startingIndex;
                 this.numMoviesToLoad = numMoviesToLoad;
@@ -85,6 +85,22 @@
                     this.previousMovies = [...movies];
                 }
             }
+            replaceMovies(movies) {
+                // Remove the old movies from the start of the carousel
+                for(let i = 0; i < movies.length; i++) {
+                    this.items[i].remove();
+                }
+                // Append the new movies at the end of the carousel
+                for (const movie of movies) {
+                    const posterPath = movie.poster_path ? TMDB_BASE_IMAGE_URL + movie.poster_path : FALLBACK_IMAGE;
+                    const item = document.createElement('div');
+                    item.classList.add('item');
+                    item.innerHTML = `<img src="${posterPath}" alt="${movie.title}">`;
+                    this.slider.appendChild(item);
+                }
+                // Update the items array
+                this.items = [...this.items.slice(movies.length), ...Array.from(this.slider.getElementsByClassName('item'))];
+            }
 
             fetchNewMovies(page, callback) {
                 getRandomTMDbMovieData(page, (err, movies) => {
@@ -93,7 +109,10 @@
                     } else {
                         this.movieData = movies; // Replace the old movies with the new ones
                         this.slider.innerHTML = ''; // Clear the old movies from the DOM
-                        this.appendMovies(movies); // Add the new movies to the DOM
+                        this.appendMovies(movies);
+                        if (this.carouselID === 'carousel1') {
+                            this.previousMovies = [...movies]; // Copy the new movies to the previousMovies array
+                        }// Add the new movies to the DOM
                         // TODO: Update the DOM to reflect the new movies
                         // TODO: Start the carousel from the beginning
                     }
@@ -102,31 +121,7 @@
             appendMovies(movies) {
                 // Assuming movies is an array of movie objects
                 movies.forEach((movie, index) => {
-                    const posterPath = movie.poster_path
-                        ? "https://image.tmdb.org/t/p/w500" + movie.poster_path
-                        : "img/TMDB logo1.svg";
-
-                    const carouselItem = document.createElement('div');
-                    carouselItem.classList.add('carousel__slider__item');
-
-                    const frame = document.createElement('div');
-                    frame.classList.add('item__3d-frame');
-                    carouselItem.appendChild(frame);
-
-                    const frontBox = document.createElement('div');
-                    frontBox.classList.add('item__3d-frame__box', 'item__3d-frame__box--front');
-                    frontBox.style.backgroundImage = `url(${posterPath})`;
-                    frontBox.style.backgroundSize = 'cover';
-                    frame.appendChild(frontBox);
-
-                    const leftBox = document.createElement('div');
-                    leftBox.classList.add('item__3d-frame__box', 'item__3d-frame__box--left');
-                    frame.appendChild(leftBox);
-
-                    const rightBox = document.createElement('div');
-                    rightBox.classList.add('item__3d-frame__box', 'item__3d-frame__box--right');
-                    frame.appendChild(rightBox);
-
+                    const carouselItem = createCarouselItem(movie);
                     this.slider.appendChild(carouselItem);
                     this.items = this.carousel.getElementsByClassName('carousel__slider__item');
                 });
@@ -185,16 +180,14 @@
                                 this.appendMovies(newMovies); // append new movies into carousel
                             }
                         });
-                    } else if (this.carouselID === 'carousel2') {
-                        this.appendMovies(this.previousMovies); // append previous movies into carousel
+                    } else if (this.carouselID === 'carousel2' && carousel1.previousMovies.length > 0) {
+                        this.appendMovies(carousel1.previousMovies); // append previous movies into carousel
                     }
                 }
                 for (let i = 0; i < this.items.length; i++) {
                     let item = this.items[i],
                         box = item.getElementsByClassName('item__3d-frame')[0];
                     console.log(`Carousel ${this.carousel.id}: currIndex = ${this.currIndex}`);
-
-
 
                     relativeIndex = i - this.currIndex;
                     let rotationMultiplier = this.slideDirection == 'right' || 'left' ? 1 : -1;
@@ -224,8 +217,6 @@
                 }
 
                 this.slider.style.transform = "translate3d(" + (index * -this.width + window.innerWidth / 2 - this.width / 2) + "px, 0, 0)";
-
-
 
                 if (index >= this.movieData.length - 20) {
                     this.getRandomMovies(++this.currentPage);
@@ -257,10 +248,10 @@
                     if (this.currIndex === this.items.length - 2 && this.carouselID === 'carousel1') {
                         // Load new movies for carousel1 when near the end
                         this.currentPage++;
-                        this.getRandomMovies(this.currentPage, this.carouselID);
-                    } else if (this.currIndex === this.items.length - 2 && this.carouselID === 'carousel2') {
+                        this.getRandomMovies(this.currentPage);
+                    } else if (this.currIndex === this.items.length - 2 && this.carouselID === 'carousel2' && carousel1.previousMovies.length > 0) {
                         // Load previous movies from carousel1 for carousel2 when near the end
-                        this.appendMovies(this.previousMovies);
+                        this.appendMovies(carousel1.previousMovies);
                     }
                 this.move(++this.currIndex);
                 this.timer();
@@ -312,25 +303,7 @@
 
                     // Only take the first 50 movies
                     tmdbMovieData.slice(0, this.numMoviesToLoad).forEach((movie, index) => {
-                        const posterPath = movie.poster_path ?
-                            "https://image.tmdb.org/t/p/w500" + movie.poster_path :
-                            "img/TMDB logo1.svg";
-                        const carouselItem = document.createElement('div');
-                        carouselItem.classList.add('carousel__slider__item');
-                        const frame = document.createElement('div');
-                        frame.classList.add('item__3d-frame');
-                        carouselItem.appendChild(frame);
-                        const frontBox = document.createElement('div');
-                        frontBox.classList.add('item__3d-frame__box', 'item__3d-frame__box--front');
-                        frontBox.style.backgroundImage = `url(${posterPath})`;
-                        frontBox.style.backgroundSize = 'cover';
-                        frame.appendChild(frontBox);
-                        const leftBox = document.createElement('div');
-                        leftBox.classList.add('item__3d-frame__box', 'item__3d-frame__box--left');
-                        frame.appendChild(leftBox);
-                        const rightBox = document.createElement('div');
-                        rightBox.classList.add('item__3d-frame__box', 'item__3d-frame__box--right');
-                        frame.appendChild(rightBox);
+                        const carouselItem = createCarouselItem(movie);
                         carouselSlider.appendChild(carouselItem);
                         this.items = this.carousel.getElementsByClassName('carousel__slider__item');
                     });
@@ -349,7 +322,7 @@
             }
         }
 
-        let carousel1 = new Carousel(document.getElementById('carousel1'), 1, 'left', 20, 0, 1, 20);
-        let carousel2 = new Carousel(document.getElementById('carousel2'), 2, 'right', 19, 19, 2, 20);
+        let carousel1 = new Carousel(document.getElementById('carousel1'), 1, 'left', [], 0, 1, 20);
+        let carousel2 = new Carousel(document.getElementById('carousel2'), 2, 'right', [], 19, 2, 20);
     };
 })();
