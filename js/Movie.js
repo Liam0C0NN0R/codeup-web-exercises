@@ -20,20 +20,46 @@
                 }
             });
         }
+        function createCarouselItem(movie) {
+            const posterPath = movie.poster_path
+                ? "https://image.tmdb.org/t/p/w500" + movie.poster_path
+                : "img/TMDB logo1.svg";
+
+            const carouselItem = document.createElement('div');
+            carouselItem.classList.add('carousel__slider__item');
+
+            const frame = document.createElement('div');
+            frame.classList.add('item__3d-frame');
+            carouselItem.appendChild(frame);
+
+            const frontBox = document.createElement('div');
+            frontBox.classList.add('item__3d-frame__box', 'item__3d-frame__box--front');
+            frontBox.style.backgroundImage = `url(${posterPath})`;
+            frontBox.style.backgroundSize = 'cover';
+            frame.appendChild(frontBox);
+
+            const leftBox = document.createElement('div');
+            leftBox.classList.add('item__3d-frame__box', 'item__3d-frame__box--left');
+            frame.appendChild(leftBox);
+
+            const rightBox = document.createElement('div');
+            rightBox.classList.add('item__3d-frame__box', 'item__3d-frame__box--right');
+            frame.appendChild(rightBox);
+
+            return carouselItem;
+        }
 
         class Carousel {
             constructor(carouselElement, initialPage, slideDirection, carouselItems, startingIndex, carouselID, numMoviesToLoad) {
                 this.carousel = carouselElement;
-                this.previousMovies = []
+                this.previousMovies = [];
+                this.items = carouselItems;
                 this.carouselID = carouselID;
                 this.slideDirection = slideDirection;
                 this.currIndex = startingIndex;
                 this.numMoviesToLoad = numMoviesToLoad;
                 this.startingIndex = startingIndex;
                 this.slider = this.carousel.getElementsByClassName('carousel__slider')[0];
-                if (this.carousel !== null) {
-                    const carouselSlider = this.carousel.getElementsByClassName('carousel__slider')[0];
-                }
                 this.items = this.carousel.getElementsByClassName('carousel__slider__item');
                 this.prevBtn = this.carousel.querySelector('.carousel__prev');
                 this.nextBtn = this.carousel.querySelector('.carousel__next');
@@ -43,29 +69,72 @@
                 this.height = null;
                 this.totalWidth = null;
                 this.margin = 20;
-                // this.currIndex = 0;
                 this.interval = null;
                 this.intervalTime = 4000;
-                this.getRandomMovies(this.currentPage, carouselID,() => {
-                    // this.init();
-                    // this.timer();
-                });
+
                 this.bindEvents();
-                // this.observer = new IntersectionObserver(this.handleIntersection, {
-                //     root: this.carousel,
-                //     rootMargin: '0px',
-                //     threshold: 0.1
-                // });
-                // this.init();
+                this.getRandomMovies(this.currentPage, carouselID,() => {
+                    this.init();
+                    this.timer();
+                });
             }
             loadNewMovies(movies) {
-                // Instead of resetting the items array, you push the new movies
-                this.items.push(...movies);
+                this.appendMovies(movies);
                 // If this is carousel1, store these movies for carousel2 to load later
-                if (this.carouselId === 'carousel1') {
+                if (this.carouselID === 'carousel1') {
                     this.previousMovies = [...movies];
                 }
             }
+
+            fetchNewMovies(page, callback) {
+                getRandomTMDbMovieData(page, (err, movies) => {
+                    if (err) {
+                        console.error(err);
+                    } else {
+                        this.movieData = movies; // Replace the old movies with the new ones
+                        this.slider.innerHTML = ''; // Clear the old movies from the DOM
+                        this.appendMovies(movies); // Add the new movies to the DOM
+                        // TODO: Update the DOM to reflect the new movies
+                        // TODO: Start the carousel from the beginning
+                    }
+                });
+            }
+            appendMovies(movies) {
+                // Assuming movies is an array of movie objects
+                movies.forEach((movie, index) => {
+                    const posterPath = movie.poster_path
+                        ? "https://image.tmdb.org/t/p/w500" + movie.poster_path
+                        : "img/TMDB logo1.svg";
+
+                    const carouselItem = document.createElement('div');
+                    carouselItem.classList.add('carousel__slider__item');
+
+                    const frame = document.createElement('div');
+                    frame.classList.add('item__3d-frame');
+                    carouselItem.appendChild(frame);
+
+                    const frontBox = document.createElement('div');
+                    frontBox.classList.add('item__3d-frame__box', 'item__3d-frame__box--front');
+                    frontBox.style.backgroundImage = `url(${posterPath})`;
+                    frontBox.style.backgroundSize = 'cover';
+                    frame.appendChild(frontBox);
+
+                    const leftBox = document.createElement('div');
+                    leftBox.classList.add('item__3d-frame__box', 'item__3d-frame__box--left');
+                    frame.appendChild(leftBox);
+
+                    const rightBox = document.createElement('div');
+                    rightBox.classList.add('item__3d-frame__box', 'item__3d-frame__box--right');
+                    frame.appendChild(rightBox);
+
+                    this.slider.appendChild(carouselItem);
+                    this.items = this.carousel.getElementsByClassName('carousel__slider__item');
+                });
+                // Recalculate carousel size after adding new items
+                this.resize();
+            }
+
+
 
             init() {
                 setTimeout(() => {
@@ -86,7 +155,6 @@
                 this.width = Math.max(window.innerWidth * .25, 275);
                 this.height = window.innerHeight * .5;
                 this.totalWidth = this.width * this.items.length;
-                // this.carousel.style.width = this.totalWidth + "px";
                 this.slider.style.width = this.totalWidth + "px";
 
                 for (let i = 0; i < this.items.length; i++) {
@@ -99,13 +167,28 @@
             move(index) {
                 if (index < 0) {
                     index = this.items.length - 1;
-                }
-                // If index is greater or equal to the length of the array, wrap it around to the beginning
-                else if (index >= this.items.length) {
+                } else if (index >= this.items.length) {
                     index = 0;
                 }
+
                 this.currIndex = index;
                 let relativeIndex;
+
+                // Load new movies if the carousel has reached the end
+                if (index === this.items.length - 1) {
+                    if (this.carouselID === 'carousel1') {
+                        this.fetchNewMovies(this.currentPage++, (err, newMovies) => {
+                            if (err) {
+                                console.error(err);
+                            } else {
+                                this.previousMovies = [...newMovies]; // Copy the new movies to the previousMovies array
+                                this.appendMovies(newMovies); // append new movies into carousel
+                            }
+                        });
+                    } else if (this.carouselID === 'carousel2') {
+                        this.appendMovies(this.previousMovies); // append previous movies into carousel
+                    }
+                }
                 for (let i = 0; i < this.items.length; i++) {
                     let item = this.items[i],
                         box = item.getElementsByClassName('item__3d-frame')[0];
@@ -137,14 +220,6 @@
                         item.classList.add('carousel__slider__item--active');
                     } else {
                         item.classList.remove('carousel__slider__item--active');
-                        // Increment the rotationCount each time move() is called
-                        this.rotationCount++;
-
-                        // If the carousel has rotated 50 times, stop the rotation
-                        if (this.rotationCount === 50) {
-                            clearInterval(this.interval);
-                            console.log("Carousel " + this.slideDirection + " has rotated 50 times");
-                        }
                     }
                 }
 
@@ -179,6 +254,14 @@
             }
 
             next() {
+                    if (this.currIndex === this.items.length - 2 && this.carouselID === 'carousel1') {
+                        // Load new movies for carousel1 when near the end
+                        this.currentPage++;
+                        this.getRandomMovies(this.currentPage, this.carouselID);
+                    } else if (this.currIndex === this.items.length - 2 && this.carouselID === 'carousel2') {
+                        // Load previous movies from carousel1 for carousel2 when near the end
+                        this.appendMovies(this.previousMovies);
+                    }
                 this.move(++this.currIndex);
                 this.timer();
             }
@@ -198,8 +281,7 @@
 
             getRandomMovies(page, carouselID, callback) {
                 if (this.movieData.length >= this.numMoviesToLoad) {
-                    // If enough movies have already been loaded, simply call the callback
-                    // (if it exists) and return
+                    // If enough movies have already been loaded, simply call the callback (if it exists) and return
                     if (callback) {
                         callback();
                     }
@@ -211,19 +293,20 @@
                 getRandomTMDbMovieData(randomPage, (err, tmdbMovieData) => {
                     if (err) {
                         console.error("Error fetching TMDb movie data:", err);
-                        return;
+                    } else {
+                        this.movieData = tmdbMovieData; // Replace the old movies with the new ones
+                        this.slider.innerHTML = ''; // Clear the old movies from the DOM
+                        this.appendMovies(tmdbMovieData); // Add the new movies to the DOM
+                        if (callback) {
+                            callback();
+                        }
                     }
-
                     // Hide the "loading..." message and show the movie list
                     $("#loading").hide();
                     $("#randomMovies").show();
                     let carouselData = carouselID === 1 ? tmdbMovieData.reverse() : tmdbMovieData;
-
                     // Add the fetched movies to the movieData array
                     this.movieData = this.movieData.concat(carouselData); console.log(`Carousel ${carouselID}: ${this.movieData.length} movies loaded.`);
-
-
-
                     // Get the carousel element
                     const carouselSlider = this.slider;
 
@@ -232,44 +315,24 @@
                         const posterPath = movie.poster_path ?
                             "https://image.tmdb.org/t/p/w500" + movie.poster_path :
                             "img/TMDB logo1.svg";
-
-
                         const carouselItem = document.createElement('div');
                         carouselItem.classList.add('carousel__slider__item');
-
                         const frame = document.createElement('div');
                         frame.classList.add('item__3d-frame');
                         carouselItem.appendChild(frame);
-
                         const frontBox = document.createElement('div');
                         frontBox.classList.add('item__3d-frame__box', 'item__3d-frame__box--front');
                         frontBox.style.backgroundImage = `url(${posterPath})`;
                         frontBox.style.backgroundSize = 'cover';
-                        // frontBox.style.backgroundColor = '#ccc';
                         frame.appendChild(frontBox);
-
                         const leftBox = document.createElement('div');
                         leftBox.classList.add('item__3d-frame__box', 'item__3d-frame__box--left');
                         frame.appendChild(leftBox);
-
                         const rightBox = document.createElement('div');
                         rightBox.classList.add('item__3d-frame__box', 'item__3d-frame__box--right');
                         frame.appendChild(rightBox);
-
                         carouselSlider.appendChild(carouselItem);
-                        // this.observer.observe(carouselItem);
                         this.items = this.carousel.getElementsByClassName('carousel__slider__item');
-                        if (index === 49) {
-                            console.log("All 50 movies have been loaded for carousel " + carouselID);
-                        }
-                        console.log(`Carousel ${carouselID}: ${this.movieData.length} movies loaded.`);
-                        if (index === this.numMoviesToLoad - 1) {
-                            console.log(`All ${this.numMoviesToLoad} movies have been loaded for carousel ` + carouselID);
-
-                        }
-
-
-
                     });
                     if (this.slideDirection === 'right') {
                         this.currIndex = this.items.length - 3;
