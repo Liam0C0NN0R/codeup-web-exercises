@@ -73,26 +73,35 @@
                 this.intervalTime = 4000;
 
                 this.bindEvents();
-                this.getRandomMovies(this.currentPage, carouselID,() => {
+                this.getRandomMovies(this.currentPage, carouselID, () => {
                     this.init();
                     this.timer();
                 });
             }
+
             loadNewMovies(movies) {
                 this.appendMovies(movies);
                 // If this is carousel1, store these movies for carousel2 to load later
                 if (this.carouselID === 'carousel1') {
                     this.previousMovies = [...movies];
                 }
+                if (this.slideDirection === 'left') {
+                    this.slider.style.left = this.slidePosition + 'px';
+                } else {
+                    this.slider.style.right = this.slidePosition + 'px';
+                }
             }
+
             replaceMovies(movies) {
                 // Remove the old movies from the start of the carousel
-                for(let i = 0; i < movies.length; i++) {
+                for (let i = 0; i < movies.length; i++) {
                     this.items[i].remove();
                 }
                 // Append the new movies at the end of the carousel
                 for (const movie of movies) {
-                    const posterPath = movie.poster_path ? TMDB_BASE_IMAGE_URL + movie.poster_path : FALLBACK_IMAGE;
+                    const posterPath = movie.poster_path
+                        ? "https://image.tmdb.org/t/p/w500" + movie.poster_path
+                        : "img/TMDB logo1.svg";
                     const item = document.createElement('div');
                     item.classList.add('item');
                     item.innerHTML = `<img src="${posterPath}" alt="${movie.title}">`;
@@ -100,6 +109,11 @@
                 }
                 // Update the items array
                 this.items = [...this.items.slice(movies.length), ...Array.from(this.slider.getElementsByClassName('item'))];
+                if (this.slideDirection === 'left') {
+                    this.slider.style.left = this.slidePosition + 'px';
+                } else {
+                    this.slider.style.right = this.slidePosition + 'px';
+                }
             }
 
             fetchNewMovies(page, callback) {
@@ -118,6 +132,7 @@
                     }
                 });
             }
+
             appendMovies(movies) {
                 // Assuming movies is an array of movie objects
                 movies.forEach((movie, index) => {
@@ -128,7 +143,6 @@
                 // Recalculate carousel size after adding new items
                 this.resize();
             }
-
 
 
             init() {
@@ -245,14 +259,14 @@
             }
 
             next() {
-                    if (this.currIndex === this.items.length - 2 && this.carouselID === 'carousel1') {
-                        // Load new movies for carousel1 when near the end
-                        this.currentPage++;
-                        this.getRandomMovies(this.currentPage);
-                    } else if (this.currIndex === this.items.length - 2 && this.carouselID === 'carousel2' && carousel1.previousMovies.length > 0) {
-                        // Load previous movies from carousel1 for carousel2 when near the end
-                        this.appendMovies(carousel1.previousMovies);
-                    }
+                if (this.currIndex === this.items.length - 2 && this.carouselID === 'carousel1') {
+                    // Load new movies for carousel1 when near the end
+                    this.currentPage++;
+                    this.getRandomMovies(this.currentPage);
+                } else if (this.currIndex === this.items.length - 2 && this.carouselID === 'carousel2' && carousel1.previousMovies.length > 0) {
+                    // Load previous movies from carousel1 for carousel2 when near the end
+                    this.appendMovies(carousel1.previousMovies);
+                }
                 this.move(++this.currIndex);
                 this.timer();
             }
@@ -278,51 +292,77 @@
                     }
                     return;
                 }
+
                 // Generate a random page between 1 and 500 (as TMDb has a maximum of 500 pages)
                 const randomPage = Math.floor(Math.random() * 500) + 1;
 
-                getRandomTMDbMovieData(randomPage, (err, tmdbMovieData) => {
+                getRandomTMDbMovieData(randomPage, (err, data) => {
                     if (err) {
                         console.error("Error fetching TMDb movie data:", err);
-                    } else {
-                        this.movieData = tmdbMovieData; // Replace the old movies with the new ones
-                        this.slider.innerHTML = ''; // Clear the old movies from the DOM
-                        this.appendMovies(tmdbMovieData); // Add the new movies to the DOM
-                        if (callback) {
-                            callback();
-                        }
+                        return;
                     }
+
+                    let tmdbMovieData = data;
+
+                    if (this.carouselID === 'carousel2' && carousel1.hasLoadedNewData) {
+                        var C1PreviousPage = carousel1.lastLoadedPage;
+                        getRandomTMDbMovieData(C1PreviousPage, (err, data) => {
+                            if (err) {
+                                console.error("Error fetching TMDb movie data:", err);
+                                return;
+                            }
+
+                            let movies = data;
+                            this.movieData = movies;
+                            this.slider.innerHTML = '';
+                            this.appendMovies(movies);
+                            processMovieData(movies);
+                        });
+                    } else {
+                        this.movieData = tmdbMovieData;
+                        this.slider.innerHTML = '';
+                        this.appendMovies(tmdbMovieData);
+                        processMovieData(tmdbMovieData);
+                    }
+                });
+
+                const processMovieData = (movieData) => {
                     // Hide the "loading..." message and show the movie list
                     $("#loading").hide();
                     $("#randomMovies").show();
-                    let carouselData = carouselID === 1 ? tmdbMovieData.reverse() : tmdbMovieData;
+                    let carouselData = carouselID === 1 ? movieData.reverse() : movieData;
+
                     // Add the fetched movies to the movieData array
-                    this.movieData = this.movieData.concat(carouselData); console.log(`Carousel ${carouselID}: ${this.movieData.length} movies loaded.`);
+                    this.movieData = this.movieData.concat(carouselData);
+                    console.log(`Carousel ${carouselID}: ${this.movieData.length} movies loaded.`);
+
                     // Get the carousel element
                     const carouselSlider = this.slider;
 
                     // Only take the first 50 movies
-                    tmdbMovieData.slice(0, this.numMoviesToLoad).forEach((movie, index) => {
+                    movieData.slice(0, this.numMoviesToLoad).forEach((movie, index) => {
                         const carouselItem = createCarouselItem(movie);
                         carouselSlider.appendChild(carouselItem);
                         this.items = this.carousel.getElementsByClassName('carousel__slider__item');
                     });
+
                     if (this.slideDirection === 'right') {
                         this.currIndex = this.items.length - 3;
                     } else {
                         this.currIndex = 2;
                     }
+
                     if (callback) {
                         callback();
                     }
                     this.init();
                     this.timer();
+                };
 
-                });
+
+                let carousel1 = new Carousel(document.getElementById('carousel1'), 1, 'left', [], 0, 1, 20);
+                let carousel2 = new Carousel(document.getElementById('carousel2'), 2, 'right', [], 19, 2, 20);
             }
         }
-
-        let carousel1 = new Carousel(document.getElementById('carousel1'), 1, 'left', [], 0, 1, 20);
-        let carousel2 = new Carousel(document.getElementById('carousel2'), 2, 'right', [], 19, 2, 20);
     };
 })();
