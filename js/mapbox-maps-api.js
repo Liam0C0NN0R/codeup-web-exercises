@@ -1,5 +1,5 @@
 (function () {
-    import{ openWeatherKey, mapboxToken} from 'js/keys.js';
+    import{ openWeatherKey, mapboxToken} from 'js/keys.mjs';
 
 
     mapboxgl.accessToken = mapboxToken;
