@@ -1,5 +1,15 @@
 
-
+.glide__slide img {
+    max-width: 200%;
+    height: auto;
+}
+#carousel1 {
+    margin-bottom: 20px; /* adjust as needed */
+}
+.glide__slide {
+    margin: 0 20px;
+    padding: 35px/* adjust as needed */
+}
 
 
 
