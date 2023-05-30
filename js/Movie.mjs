@@ -6,7 +6,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
 import { tmdbToken } from './keys.mjs';
-
+document.addEventListener("DOMContentLoaded", function() {
 (function () {
     "use strict";
     const url = "https://admitted-fish-canidae.glitch.me//movies";
@@ -38,9 +38,11 @@ import { tmdbToken } from './keys.mjs';
     function generateSlides(carouselId, movies) {
         const carouselDiv = document.querySelector(`${carouselId} div`);
         movies.results.forEach(movie => {
+            const slideDiv = document.createElement('div');
             const img = document.createElement('img');
             img.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
             img.alt = movie.title;
+            slideDiv.appendChild(img);
             carouselDiv.appendChild(img);
         });
 
@@ -68,10 +70,13 @@ import { tmdbToken } from './keys.mjs';
 
     function appendMoviesToCarousel(carouselId, movies) {
         movies.results.forEach(movie => {
+            const slideDiv = document.createElement('div');
             const img = document.createElement('img');
             img.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
             img.alt = movie.title;
+            slideDiv.appendChild(img);
             $(carouselId).slick('slickAdd', img.outerHTML);
         });
     }
 })();
+});

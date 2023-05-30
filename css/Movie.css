@@ -1,19 +1,19 @@
-
-.glide__slide img {
-    max-width: 200%;
-    height: auto;
-}
-#carousel1 {
-    margin-bottom: 20px; /* adjust as needed */
-}
-.glide__slide {
-    margin: 0 20px;
-    padding: 35px/* adjust as needed */
+.slick-slide {
+    display: none;
+    float: left;
+    height: 100%;
+    min-height: 1px;
 }
 
+/* And/or set a width on slick-list */
+
+.slick-list {
+    width: 100%;
+}
 
 
-    /*------------------------------*/
+
+/*------------------------------*/
 .h1 {
     color: #307D7E;
     font-family: 'Raleway', sans-serif;

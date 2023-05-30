@@ -1,2 +1,5 @@
 js/keys.mjs
 node_modules/
+.cache
+dist
+
