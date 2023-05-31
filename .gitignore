@@ -1,4 +1,4 @@
-js/keys.mjs
+js/keys.js
 node_modules/
 .cache
 dist
