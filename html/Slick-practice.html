@@ -5,15 +5,26 @@
     <title>slick</title>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"/>
+    <link rel="stylesheet" href="../css/Movie.css">
+    <style>
+        .half-slide {
+            width: 50%;
+            float: left;
+        }
+    </style>
 </head>
 <body>
 <button type="button" class="slick-prev">Previous</button>
 <div class="my-carousel">
-    <div><h3>1</h3></div>
-    <div><h3>2</h3></div>
-    <div><h3>3</h3></div>
-    <div><h3>4</h3></div>
-    <div><h3>5</h3></div>
+    <div class="slide">
+        <div class="half-slide"><img src="https://picsum.photos/200/300?random=1"></div>
+        <div class="half-slide"><img src="https://picsum.photos/200/300?random=2"></div>
+    </div>
+    <div class="slide">
+        <div class="half-slide"><img src="https://picsum.photos/200/300?random=3"></div>
+        <div class="half-slide"><img src="https://picsum.photos/200/300?random=4"></div>
+    </div>
+    <!-- Add more slides as necessary -->
 </div>
 <button type="button" class="slick-next">Next</button>
 

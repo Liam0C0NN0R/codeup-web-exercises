@@ -1,0 +1,35 @@
+.carousel-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 600px;
+}
+
+.carousel {
+    display: flex;
+    overflow-x: hidden;
+    height: 50%;
+    scroll-behavior: smooth;
+    align-items: center;
+}
+
+button {
+    margin: 20px;
+}
+#carousel1 {
+    direction: rtl;
+}
+
+#carousel1, #carousel2 {
+    width: 100%;
+    overflow: scroll;
+    white-space: nowrap;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.movie {
+    width: 20%; /* for 5 items to be visible at once */
+    display: inline-block;
+}
+
