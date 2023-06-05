@@ -9,7 +9,7 @@
     display: flex;
     overflow-x: hidden;
     height: 50%;
-    scroll-behavior: smooth;
+    /*scroll-behavior: smooth;*/
     align-items: center;
 }
 
@@ -17,7 +17,8 @@ button {
     margin: 20px;
 }
 #carousel1 {
-    direction: rtl;
+    /*direction: rtl;*/
+    margin-bottom: 3em;
 }
 
 #carousel1, #carousel2 {
@@ -29,7 +30,8 @@ button {
 }
 
 .movie {
-    width: 20%; /* for 5 items to be visible at once */
-    display: inline-block;
+    width: 20%;
+    transition: transform 0.5s;
+    margin: 16px;
 }
 
