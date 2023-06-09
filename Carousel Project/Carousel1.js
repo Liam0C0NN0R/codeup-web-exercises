@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const carousel1 = document.getElementById('carousel1');
 
+
     const options = {
         method: 'GET',
         headers: {
@@ -9,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    let currentPage1 = 1;
+    let currentPage1 = 2;
     let isLoading1 = false;
     let storedMovies1 = [];
 
@@ -86,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
             carousel.removeChild(placeholder);
 
             console.log(`Successfully added movies to carousel. New carousel length: ${carousel.childElementCount}`);
-            isLoading1 = false; // <-- Set isLoading1 to false here
+            isLoading1 = false;
         }, 50);
     };
 
@@ -95,49 +96,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-    let targetScrollPosition = carousel1.scrollWidth;
+    let scrolling = false;
 
     const moveCarousel = async (carousel) => {
         const posterWidthPlusMargin = 200;
-        targetScrollPosition = carousel.scrollLeft - posterWidthPlusMargin;
-    };
 
-    const scrollSmoothly = async () => {
-        const generalScrollSpeed = 1;
-        const smoothScrollSpeed = 0.5;
-        if(targetScrollPosition !== null){
-            const distanceLeft = Math.abs(carousel1.scrollLeft - targetScrollPosition);
-            if (distanceLeft < 1) {
-                carousel1.scrollLeft = targetScrollPosition;
-                targetScrollPosition = null;
+        async function scrollSmoothly() {
+            const newScrollPosition = carousel.scrollLeft - posterWidthPlusMargin;
+            const distanceLeft = Math.abs(carousel.scrollLeft - newScrollPosition);
 
-                const upcomingPosters = [...carousel1.children].findIndex(movieElement => movieElement.offsetLeft + movieElement.offsetWidth/2 >= carousel1.scrollLeft);
 
-                if (upcomingPosters <= 3 && !isLoading1) {
-                    console.log(`Starting to fetch page ${currentPage1 + 1}`);
-                    await addMoviesToCarousel(carousel1, ++currentPage1);
-                    console.log(`Finished fetching page ${currentPage1}`);
-                    // After fetching, update targetScrollPosition
-                    targetScrollPosition = carousel1.scrollWidth;
-                }
-            } else {
-                carousel1.scrollLeft -= smoothScrollSpeed;
+            const upcomingPosters = [...carousel.children].findIndex(movieElement => movieElement.offsetLeft + movieElement.offsetWidth/2 >= carousel.scrollLeft);
+
+            console.log(`Carousel Scroll Position: ${carousel.scrollLeft}`);
+            console.log(`New Scroll Position: ${newScrollPosition}`);
+            console.log(`Upcoming Posters: ${upcomingPosters}`);
+
+            if (upcomingPosters <= 3 && !isLoading1) {
+                console.log(`Starting to fetch page ${currentPage1 + 1}`);
+                await addMoviesToCarousel(carousel, ++currentPage1);
+                console.log(`Finished fetching page ${currentPage1}`);
             }
-        } else {
-            carousel1.scrollLeft -= generalScrollSpeed;
+
+            if (distanceLeft < 1) {
+                carousel.scrollLeft = newScrollPosition;
+                scrolling = false;
+            } else {
+                carousel.scrollLeft -= distanceLeft / 600; // Adjust this value for smoother or rougher scrolling
+                requestAnimationFrame(scrollSmoothly);
+            }
         }
 
-        // Always request next frame
-        requestAnimationFrame(scrollSmoothly);
+        if (!scrolling) {
+            scrolling = true;
+            requestAnimationFrame(scrollSmoothly);
+        }
     };
 
-    // Start the scrolling
-    requestAnimationFrame(scrollSmoothly);
-    setInterval(() => moveCarousel(carousel1), 3000);
+    (function scrollLoop() {
+        moveCarousel(carousel1);
+        requestAnimationFrame(scrollLoop);
+    })();setInterval(() => moveCarousel(carousel1), 3000);
 
     // Initial fetch for carousels
     addMoviesToCarousel(carousel1, currentPage1).then(() => {
         carousel1.scrollLeft = carousel1.scrollWidth;
-        targetScrollPosition = carousel1.scrollWidth;
     });
+
 });
