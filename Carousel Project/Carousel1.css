@@ -34,7 +34,29 @@ button {
 
 .movie {
     width: 20%;
-    transition: transform 0.5s;
     margin: 16px;
+    position: relative;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    transform: rotateY(-20deg);
+}
+
+.movie img {
+    display: block;
+    transform: rotateY(-15deg);
+    transition: transform 0.5s;
+}
+
+.movie::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 100%;
+    width: 40px;
+    background: rgba(0,0,0,0.5);
+    transform: rotateY(-90deg);
+    transform-origin: left;
+    transition: all 0.5s;
 }
 

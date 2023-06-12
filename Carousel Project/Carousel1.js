@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const carousel1 = document.getElementById('carousel1');
-
+    const carousel2 = document.getElementById('carousel2');
 
     const options = {
         method: 'GET',
@@ -29,8 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const createMovieElement = movie => {
         const movieElement = document.createElement('div');
         movieElement.classList.add('movie');
-        movieElement.style.opacity = '0'; // Initialize movie element with zero opacity
-
+        movieElement.style.opacity = '0';
 
         const movieImage = document.createElement('img');
         movieImage.src = `https://image.tmdb.org/t/p/w200${movie.poster_path}`;
@@ -40,38 +39,34 @@ document.addEventListener("DOMContentLoaded", () => {
         return movieElement;
     };
 
-    const addMoviesToCarousel = async (carousel, pageNumber) => {
-        isLoading1 = true;
-        const movies = await fetchMovies(pageNumber);
-        storedMovies1 = [...storedMovies1, ...movies];
-
-        console.log(`Adding ${movies.length} movies from page ${pageNumber} to carousel...`);
-
-        // Calculate the total width of the movie elements that will be added
-        const posterWidth = 200; // The width of the movie element
-        const margin = 16; // The width of the margin on one side of the movie element
-        const posterWidthPlusMargin = posterWidth + 2 * margin;  // Total width of the movie element including margins
-
+    const addMoviesToCarousel = async (carousel, movies, reverse = false) => {
+        const posterWidth = 200;
+        const margin = 16;
+        const posterWidthPlusMargin = posterWidth + 2 * margin;
         const newMoviesWidth = movies.length * posterWidthPlusMargin;
 
-        // Create and insert a temporary placeholder element at the beginning of the carousel
         const placeholder = document.createElement('div');
         placeholder.style.width = `${newMoviesWidth}px`;
-        carousel.prepend(placeholder);
+        if(reverse) {
+            carousel.append(placeholder);
+        } else {
+            carousel.prepend(placeholder);
+        }
 
-        // Save the current scroll position and size of the carousel
         const oldScrollPosition = carousel.scrollLeft;
         const oldCarouselSize = carousel.scrollWidth;
 
-        // Reverse the movies array to maintain order when using prepend
-        const reversedMovies = [...movies].reverse();
+        const sortedMovies = reverse ? movies : [...movies].reverse();
 
-        for (const movie of reversedMovies) {
+        for (const movie of sortedMovies) {
             const movieElement = createMovieElement(movie);
-            carousel.prepend(movieElement); // Use prepend here instead of appendChild
+            if(reverse) {
+                carousel.append(movieElement);
+            } else {
+                carousel.prepend(movieElement);
+            }
         }
 
-        // Force browser to recalculate layout by accessing offsetHeight
         carousel.offsetHeight;
         Array.from(carousel.children).forEach((child) => {
             child.style.transition = 'opacity 0.5s';
@@ -79,68 +74,105 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         setTimeout(() => {
-            // Calculate the new scroll position: old position plus the amount the carousel grew
-            const newScrollPosition = oldScrollPosition + (carousel.scrollWidth - oldCarouselSize);
+            const newScrollPosition = reverse ? oldScrollPosition : oldScrollPosition + (carousel.scrollWidth - oldCarouselSize);
             carousel.scrollLeft = newScrollPosition;
 
-            // Remove the placeholder element
             carousel.removeChild(placeholder);
-
-            console.log(`Successfully added movies to carousel. New carousel length: ${carousel.childElementCount}`);
-            isLoading1 = false;
         }, 50);
     };
 
+    const addMoviesToCarousel1 = async () => {
+        isLoading1 = true;
+        const movies = await fetchMovies(currentPage1);
+        storedMovies1 = [...storedMovies1, ...movies];
+        await addMoviesToCarousel(carousel1, movies);
+        isLoading1 = false;
+    };
 
+    const addMoviesToCarousel2 = async () => {
+        let movies = [];
+        if (storedMovies1.length > 0) {
+            movies = storedMovies1.splice(0, 20);
+        } else {
+            movies = await fetchMovies(1);
+        }
+        await addMoviesToCarousel(carousel2, movies, true);
+    };
 
+    let scrolling1 = false;
+    let scrolling2 = false;
 
-
-
-    let scrolling = false;
-
-    const moveCarousel = async (carousel) => {
+    const moveCarousel1 = async () => {
         const posterWidthPlusMargin = 200;
-
-        async function scrollSmoothly() {
-            const newScrollPosition = carousel.scrollLeft - posterWidthPlusMargin;
-            const distanceLeft = Math.abs(carousel.scrollLeft - newScrollPosition);
-
-
-            const upcomingPosters = [...carousel.children].findIndex(movieElement => movieElement.offsetLeft + movieElement.offsetWidth/2 >= carousel.scrollLeft);
-
-            console.log(`Carousel Scroll Position: ${carousel.scrollLeft}`);
-            console.log(`New Scroll Position: ${newScrollPosition}`);
-            console.log(`Upcoming Posters: ${upcomingPosters}`);
-
+        async function scrollSmoothly1() {
+            const newScrollPosition = carousel1.scrollLeft - posterWidthPlusMargin;
+            const distanceLeft = Math.abs(carousel1.scrollLeft - newScrollPosition);
+            const upcomingPosters = [...carousel1.children].findIndex(movieElement => movieElement.offsetLeft + movieElement.offsetWidth/2 >= carousel1.scrollLeft);
             if (upcomingPosters <= 3 && !isLoading1) {
-                console.log(`Starting to fetch page ${currentPage1 + 1}`);
-                await addMoviesToCarousel(carousel, ++currentPage1);
-                console.log(`Finished fetching page ${currentPage1}`);
+                currentPage1++;
+                await addMoviesToCarousel1();
             }
-
             if (distanceLeft < 1) {
-                carousel.scrollLeft = newScrollPosition;
-                scrolling = false;
+                carousel1.scrollLeft = newScrollPosition;
+                scrolling1 = false;
             } else {
-                carousel.scrollLeft -= distanceLeft / 600; // Adjust this value for smoother or rougher scrolling
-                requestAnimationFrame(scrollSmoothly);
+                carousel1.scrollLeft -= distanceLeft / 600;
+                requestAnimationFrame(scrollSmoothly1);
             }
         }
-
-        if (!scrolling) {
-            scrolling = true;
-            requestAnimationFrame(scrollSmoothly);
+        if (!scrolling1) {
+            scrolling1 = true;
+            requestAnimationFrame(scrollSmoothly1);
         }
     };
 
-    (function scrollLoop() {
-        moveCarousel(carousel1);
-        requestAnimationFrame(scrollLoop);
-    })();setInterval(() => moveCarousel(carousel1), 3000);
+    const moveCarousel2 = async () => {
+        console.log("Carousel2: moveCarousel2 called");
+        const posterWidthPlusMargin = 200;
+        async function scrollSmoothly2() {
+            console.log("Carousel2: inside scrollSmoothly2");
+            const newScrollPosition = carousel2.scrollLeft + posterWidthPlusMargin;
+            const distanceLeft = Math.abs(carousel2.scrollLeft - newScrollPosition);
+            const upcomingPosters = [...carousel2.children].findIndex(movieElement => movieElement.offsetLeft - carousel2.scrollLeft >= carousel2.offsetWidth);
+            console.log(`Carousel2: upcomingPosters = ${upcomingPosters}, isLoading1 = ${isLoading1}`);
+            if (upcomingPosters <= 3 && !isLoading1) {
+                console.log("Carousel2: fetching more movies");
+                await addMoviesToCarousel2();
+            }
+            console.log(`Carousel2: distanceLeft = ${distanceLeft}`);
+            if (distanceLeft < 1) {
+                carousel2.scrollLeft = newScrollPosition;
+                scrolling2 = false;
+                console.log(`Carousel2: updated scroll position to ${carousel2.scrollLeft}`);
+            } else {
+                carousel2.scrollLeft += distanceLeft / 165;  // change here
+                requestAnimationFrame(scrollSmoothly2);
+            }
+        }
+
+        if (!scrolling2) {
+            scrolling2 = true;
+            requestAnimationFrame(scrollSmoothly2);
+        }
+    };
+
+
+    (function scrollLoop1() {
+        moveCarousel1();
+        requestAnimationFrame(scrollLoop1);
+    })();
+
+    (function scrollLoop2() {
+        moveCarousel2();
+        requestAnimationFrame(scrollLoop2);
+    })();
 
     // Initial fetch for carousels
-    addMoviesToCarousel(carousel1, currentPage1).then(() => {
+    Promise.all([
+        addMoviesToCarousel1(),
+        addMoviesToCarousel2()
+    ]).then(() => {
         carousel1.scrollLeft = carousel1.scrollWidth;
+        carousel2.scrollLeft = 0;
     });
-
 });
