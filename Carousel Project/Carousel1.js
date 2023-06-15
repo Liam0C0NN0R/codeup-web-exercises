@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
     const carousel1 = document.getElementById('carousel1');
     const carousel2 = document.getElementById('carousel2');
+    const modal = document.getElementById('modal');
+    const overlay = document.querySelector('.overlay');
+
 
     const options = {
         method: 'GET',
@@ -14,6 +17,14 @@ document.addEventListener("DOMContentLoaded", () => {
     let isLoading1 = false;
     let storedMovies1 = [];
 
+    let paused = false;
+
+    carousel1.addEventListener('mouseenter', () => paused = true);
+    carousel1.addEventListener('mouseleave', () => paused = false);
+    carousel2.addEventListener('mouseenter', () => paused = true);
+    carousel2.addEventListener('mouseleave', () => paused = false);
+
+
     const fetchMovies = async pageNumber => {
         const response = await fetch(`https://api.themoviedb.org/3/discover/movie?page=${pageNumber}&include_adult=false&include_video=false&language=en-US&sort_by=popularity.desc&without_genres=asian`, options);
 
@@ -26,7 +37,31 @@ document.addEventListener("DOMContentLoaded", () => {
         return data.results;
     };
 
-    const createMovieElement = movie => {
+    const fetchMovieCredits = async movieId => {
+        const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}/credits`, options);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        return data;
+    };
+
+    const getDirector = credits => {
+        const director = credits.crew.find(crewMember => crewMember.job === "Director");
+
+        return director ? director.name : "Unknown";
+    };
+
+    const getActors = credits => {
+        const actors = credits.cast.slice(0, 3).map(actor => actor.name).join(', ');
+
+        return actors;
+    };
+
+    const createMovieElement = async movie => {
         const movieElement = document.createElement('div');
         movieElement.classList.add('movie');
         movieElement.style.opacity = '0';
@@ -36,8 +71,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
         movieElement.appendChild(movieImage);
 
+        // Fetch director's name and top 3 actors
+        const credits = await fetchMovieCredits(movie.id);
+        const director = getDirector(credits);
+        const actors = getActors(credits);
+
+        // Store the movie data including director and actors in the dataset property
+        movieElement.dataset.movie = JSON.stringify({
+            ...movie,
+            director,
+            actors
+        });
+
         return movieElement;
     };
+
 
     const addMoviesToCarousel = async (carousel, movies, reverse = false) => {
         const posterWidth = 200;
@@ -58,8 +106,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const sortedMovies = reverse ? movies : [...movies].reverse();
 
-        for (const movie of sortedMovies) {
-            const movieElement = createMovieElement(movie);
+        // Fetch movie credits and create movie elements concurrently
+        const movieElements = await Promise.all(sortedMovies.map(movie => createMovieElement(movie)));
+
+        for (const movieElement of movieElements) {
             if(reverse) {
                 carousel.append(movieElement);
             } else {
@@ -80,6 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
             carousel.removeChild(placeholder);
         }, 50);
     };
+
 
     const addMoviesToCarousel1 = async () => {
         isLoading1 = true;
@@ -105,6 +156,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const moveCarousel1 = async () => {
         const posterWidthPlusMargin = 200;
         async function scrollSmoothly1() {
+            if (paused) {
+                setTimeout(() => requestAnimationFrame(scrollSmoothly1), 100);
+                return;
+            }
             const newScrollPosition = carousel1.scrollLeft - posterWidthPlusMargin;
             const distanceLeft = Math.abs(carousel1.scrollLeft - newScrollPosition);
             const upcomingPosters = [...carousel1.children].findIndex(movieElement => movieElement.offsetLeft + movieElement.offsetWidth/2 >= carousel1.scrollLeft);
@@ -127,25 +182,23 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const moveCarousel2 = async () => {
-        console.log("Carousel2: moveCarousel2 called");
         const posterWidthPlusMargin = 200;
         async function scrollSmoothly2() {
-            console.log("Carousel2: inside scrollSmoothly2");
+            if (paused) {
+                setTimeout(() => requestAnimationFrame(scrollSmoothly2), 100);
+                return;
+            }
             const newScrollPosition = carousel2.scrollLeft + posterWidthPlusMargin;
             const distanceLeft = Math.abs(carousel2.scrollLeft - newScrollPosition);
             const upcomingPosters = [...carousel2.children].findIndex(movieElement => movieElement.offsetLeft - carousel2.scrollLeft >= carousel2.offsetWidth);
-            console.log(`Carousel2: upcomingPosters = ${upcomingPosters}, isLoading1 = ${isLoading1}`);
             if (upcomingPosters <= 3 && !isLoading1) {
-                console.log("Carousel2: fetching more movies");
                 await addMoviesToCarousel2();
             }
-            console.log(`Carousel2: distanceLeft = ${distanceLeft}`);
             if (distanceLeft < 1) {
                 carousel2.scrollLeft = newScrollPosition;
                 scrolling2 = false;
-                console.log(`Carousel2: updated scroll position to ${carousel2.scrollLeft}`);
             } else {
-                carousel2.scrollLeft += distanceLeft / 165;  // change here
+                carousel2.scrollLeft += distanceLeft / 165;
                 requestAnimationFrame(scrollSmoothly2);
             }
         }
@@ -157,13 +210,14 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
 
+
     (function scrollLoop1() {
-        moveCarousel1();
+            moveCarousel1();
         requestAnimationFrame(scrollLoop1);
     })();
 
     (function scrollLoop2() {
-        moveCarousel2();
+            moveCarousel2();
         requestAnimationFrame(scrollLoop2);
     })();
 
@@ -175,4 +229,52 @@ document.addEventListener("DOMContentLoaded", () => {
         carousel1.scrollLeft = carousel1.scrollWidth;
         carousel2.scrollLeft = 0;
     });
+
+
+    // A function to open the modal with the given movie data
+    function openModal(movie) {
+        paused = true; // Pause the carousels
+
+        // Fill the modal with the movie data
+        modal.textContent = ''; // Clear any existing content
+        modal.innerHTML = `
+    <h2>${movie.title}</h2>
+    <p>Director: ${movie.director}</p>
+    <p>Actors: ${movie.actors}</p>
+    <p>Release Date: ${movie.release_date}</p>
+    <p>Rating: ${movie.vote_average}</p>
+    <p>Synopsis: ${movie.overview}</p>
+    <button id="closeButton">Close</button>
+`;
+
+        // Show the modal
+        modal.style.display = 'block';
+
+        // Show the overlay
+        overlay.style.display = 'block';
+    }
+
+    window.closeModal = function() {
+        paused = false; // Resume the carousels
+
+        // Hide the modal
+        modal.style.display = 'none';
+
+        // Hide the overlay
+        overlay.style.display = 'none';
+    }
+
+    document.addEventListener('click', event => {
+        if (event.target.closest('.movie')) {
+            const movieElement = event.target.closest('.movie');
+            const movie = JSON.parse(movieElement.dataset.movie);
+            openModal(movie);
+        } else if (event.target.id === 'closeButton') {
+            closeModal();
+        }
+    });
+
+
+
+
 });
