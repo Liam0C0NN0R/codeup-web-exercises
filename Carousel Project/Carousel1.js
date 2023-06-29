@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const carousel2 = document.getElementById('carousel2');
     const modal = document.getElementById('modal');
     const overlay = document.querySelector('.overlay');
+    const url = "https://admitted-fish-canidae.glitch.me//movies";
 
 
     const options = {
@@ -198,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 carousel2.scrollLeft = newScrollPosition;
                 scrolling2 = false;
             } else {
-                carousel2.scrollLeft += distanceLeft / 165;
+                carousel2.scrollLeft += distanceLeft / 179;
                 requestAnimationFrame(scrollSmoothly2);
             }
         }
@@ -244,9 +245,15 @@ document.addEventListener("DOMContentLoaded", () => {
     <p>Release Date: ${movie.release_date}</p>
     <p>Rating: ${movie.vote_average}</p>
     <p>Synopsis: ${movie.overview}</p>
-    <button id="closeButton">Close</button>
+    <div class="modal-buttons">
+        <button id="closeButton">Close</button>
+        <button id="addMovieToGlitch">Add to List</button>
+    </div>
 `;
-
+// Attach the click event to the new button
+        document.getElementById('addMovieToGlitch').addEventListener('click', function() {
+            addMovieToGlitch(movie);
+        });
         // Show the modal
         modal.style.display = 'block';
 
@@ -263,13 +270,64 @@ document.addEventListener("DOMContentLoaded", () => {
         // Hide the overlay
         overlay.style.display = 'none';
     }
+    function getMovies() {
+        fetch(url)
+            .then((res) => res.json())
+            .then((data) => {
+                var movies = data;
+                var html = "";
+                movies.forEach((movie) => {
+                    html += '<div class="movie" data-id="' + movie.id + '">';
+                    html += "<h2>" + movie.title + "</h2>";
+                    html += "<p>Rating: " + movie.rating + "</p>";
+                    html += "<p>Genre: " + movie.genre + "</p>";
+                    html += '<img src="" class="movie-poster" alt="Movie Poster" />';
+                    html += '<button class="edit-movie-btn" data-id="' + movie.id + '">Edit</button>';
+                    html += '<button class="delete-movie-btn" data-id="' + movie.id + '">Delete</button>';
+                    html += "</div>";
+                });
+                $("#movies").html(html);
+            })
+            .catch((error) => {
+                console.error("Error fetching movies:", error);
+            });
+    }
+
+
+    function addMovieToGlitch(movie) {
+        // Format the movie data as required by the Glitch API
+        var movieData = {
+            title: movie.title,
+            director: movie.director,
+            actors: movie.actors,
+            release_date: movie.release_date,
+            vote_average: movie.vote_average,
+            overview: movie.overview
+        };
+
+        // Send a POST request to the Glitch API
+        $.ajax({
+            type: 'POST',
+            url: 'https://admitted-fish-canidae.glitch.me/movies',
+            data: movieData,
+            success: function (response) {
+                // Reload the movies list
+                getMovies();
+                closeModal();
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+
 
     document.addEventListener('click', event => {
         if (event.target.closest('.movie')) {
             const movieElement = event.target.closest('.movie');
             const movie = JSON.parse(movieElement.dataset.movie);
             openModal(movie);
-        } else if (event.target.id === 'closeButton') {
+        } else if (event.target.id === 'closeButton' || event.target.id === 'addMovieToGlitch'){
             closeModal();
         }
     });

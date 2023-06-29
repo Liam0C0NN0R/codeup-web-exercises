@@ -56,99 +56,6 @@
         }
 
         // Function to get all movies and render them
-        // function getRandomMovies() {
-        //     // Generate a random page between 1 and 500 (as TMDb has a maximum of 500 pages)
-        //     var randomPage = Math.floor(Math.random() * 500) + 1;
-        //
-        //     getRandomTMDbMovieData(randomPage, (err, tmdbMovieData) => {
-        //         if (err) {
-        //             console.error("Error fetching TMDb movie data:", err);
-        //             return;
-        //         }
-        //
-        //         // Hide the "loading..." message and show the movie list
-        //         $("#loading").hide();
-        //         $("#randomMovies").show();
-        //
-        //         // Generate the HTML for the movie list
-        //         var html = "";
-        //
-        //         // Only take the first 50 movies
-        //         tmdbMovieData.slice(0, 50).forEach((movie) => {
-        //             var posterPath = "https://image.tmdb.org/t/p/w500" + movie.poster_path;
-        //
-        //             html += `<a href="#" data-id="${movie.id}">
-        //     <img src="${posterPath}" class="movie-poster" alt="Movie Poster" width="500" />
-        //     <div class="movie-info d-none">
-        //       <h5>${movie.title}</h5>
-        //       <p>Rating: ${movie.vote_average}</p>
-        //       <p>Release date: ${movie.release_date}</p>
-        //     </div>
-        //   </a>`;
-        //         });
-        //
-        //         $("#rotator").html(html);
-        //     });
-        // }
-        function getRandomMovies() {
-            // Generate a random page between 1 and 500 (as TMDb has a maximum of 500 pages)
-            var randomPage = Math.floor(Math.random() * 500) + 1;
-
-            getRandomTMDbMovieData(randomPage, (err, tmdbMovieData) => {
-                if (err) {
-                    console.error("Error fetching TMDb movie data:", err);
-                    return;
-                }
-
-                // Hide the "loading..." message and show the movie list
-                $("#loading").hide();
-                $("#randomMovies").show();
-
-                // Get the carousel element
-                var rotator = document.getElementById("rotator");
-
-                // Only take the first 50 movies
-                tmdbMovieData.slice(0, 50).forEach((movie) => {
-                    var posterPath = "https://image.tmdb.org/t/p/w500" + movie.poster_path;
-
-                    // Create a new anchor element
-                    var a = document.createElement("a");
-                    a.href = "#";
-                    a.dataset.id = movie.id;
-
-                    // Create a new image element
-                    var img = document.createElement("img");
-                    img.src = posterPath;
-                    img.className = "movie-poster";
-                    img.alt = "Movie Poster";
-                    img.width = "500";
-
-                    // Append the image to the anchor
-                    a.appendChild(img);
-
-                    // Create a new div element for the movie info
-                    var div = document.createElement("div");
-                    div.className = "movie-info d-none";
-
-                    // Add the movie title, rating, and release date to the div
-                    div.innerHTML = `
-              <h5>${movie.title}</h5>
-              <p>Rating: ${movie.vote_average}</p>
-              <p>Release date: ${movie.release_date}</p>
-            `;
-
-                    // Append the div to the anchor
-                    a.appendChild(div);
-
-                    // Append the anchor to the carousel
-                    rotator.appendChild(a);
-                });
-            });
-        }
-
-
-
-        // Function to get all movies and render them
         function getMyMovies() {
             fetch(url)
                 .then((res) => res.json())
@@ -163,15 +70,17 @@
 
                     movies.forEach((movie) => {
                         html += `<a href="#" data-id="${movie.id}">
-          <img src="" class="movie-poster" alt="Movie Poster" width="500" />
-          <div class="movie-info d-none">
-            <h5>${movie.title}</h5>
-            <p>Rating: ${movie.rating}</p>
-            <p>Genre: ${movie.genre}</p>
-            <button class="edit-movie-btn" data-id="${movie.id}">Edit</button>
-            <button class="delete-movie-btn" data-id="${movie.id}">Delete</button>
-          </div>
-        </a>`;
+          <div class="movie-container">
+            <img src="" class="movie-poster" alt="Movie Poster" />
+            <div class="movie-info d-none">
+                <h5>${movie.title}</h5>
+                <p>Rating: ${movie.rating}</p>
+                <p>Genre: ${movie.genre}</p>
+                <button class="edit-movie-btn" data-id="${movie.id}">Edit</button>
+                <button class="delete-movie-btn" data-id="${movie.id}">Delete</button>
+            </div>
+        </div>
+    </a>`;
 
                         // Get the movie data from the TMDb API and set the poster
                         getTMDbMovieData(movie.title, (err, tmdbMovieData) => {
@@ -218,9 +127,6 @@
                     console.error("Error fetching movies:", error);
                 });
         }
-
-        // Call the function to get and render all movies
-        getRandomMovies();
 
         // Add click event listener for edit movie button
         $(document).on('click', '.edit-movie-btn', function () {
@@ -295,13 +201,12 @@
         });
         $("#randomMoviesTab").click(function () {
             $("#myMovies").hide();
-            $("#randomMovies").show();
-            getRandomMovies();
+            $("#carousel-container").show();
         });
 
         $("#myMoviesTab").click(function () {
             $("#loading").show();
-            $("#randomMovies").hide();
+            $("#carousel-container").hide();
             $("#myMovies").show();
             getMyMovies();
         });
@@ -338,6 +243,7 @@
         });
 
         // Add event listener for the add movie button
+        // Add event listener for the add movie button
         $('#submit-movie-btn').click(function (e) {
             e.preventDefault();
             // Disable the submit button
@@ -353,23 +259,31 @@
                 data: formData,
                 success: function (response) {
                     // Enable the submit button
-                    $(this).prop("disabled", false);
+                    $('#submit-movie-btn').prop("disabled", false);
                     // Enable the add button
                     $('#add-movie-btn').prop("disabled", false);
-                    // Reload the movies list
-                    getMovies();
+
+                    // Add the new movie directly to your movies list in the browser here
+                    // You may need to adjust this code based on how you are rendering your movies list
+                    // For example:
+                    var newMovie = $('<div>').text(response.title); // replace this with the actual HTML structure for a movie
+                    $('#moviesList').append(newMovie);
+
                     // Close the modal
-                    $('#addMovieModal').modal('hide');
+                    document.getElementById('addMovieModal').style.display = 'none';
+                    getMyMovies(); // refresh your movie list
                 },
                 error: function (error) {
                     // Enable the submit button
-                    $(this).prop("disabled", false);
+                    $('#submit-movie-btn').prop("disabled", false);
                     // Enable the add button
                     $('#add-movie-btn').prop("disabled", false);
                     console.log(error);
                 }
             });
         });
+
+
         // Add event listener for closing the add movie modal
         $('.modal-header .close').click(function () {
             $('#addMovieModal').modal('hide');
@@ -400,31 +314,7 @@
             $('#add-movie-btn').prop("disabled", false);
         });
 
-        function startCarouselRotation() {
-            const rotateComplete = function (e) {
-                target.style.animationName = "";
-                target.insertBefore(arr[arr.length - 1], arr[0]);
-                setTimeout(function (el) {
-                    el.style.animationName = "rotator";
-                }, 0, target);
-            };
 
-            var target = document.getElementById("rotator");
-            var arr = target.getElementsByTagName("a");
-
-            target.addEventListener("animationend", rotateComplete, false);
-            target.addEventListener("webkitAnimationEnd", rotateComplete, false);
-            target.addEventListener("MSAnimationEnd", rotateComplete, false);
-        }
-
-        $(document).ready(function () {
-            $("#loading").show();
-            $("#movies").hide();
-
-            getMovies();
-
-            startCarouselRotation();
-        });
         window.addEventListener("DOMContentLoaded", function (e) {
             var rotateComplete = function (e) {
                 target.style.webkitAnimationName = "";
@@ -468,19 +358,130 @@
 
     $('#myBtn').click(topFunction);
 
-    function toggleMode() {
-        var body = document.body;
-        var switchImg = document.getElementById('toggle-switch');
+    $(document).ready(function() {
+        /* Add this script to handle showing and hiding of the headings when tabs are clicked */
+        $("#randomMoviesTab").on("click", function() {
+            $("#trending-heading").show();
+            $("#my-movies-heading").hide();
+            $(".sticky-tab").hide(); /* Hide the Add Movie button when Random Movies tab is clicked */
+        });
 
-        if (body.className === "light") {
-            body.className = "dark";
-            switchImg.src = "../img/light-switch-ON.png";
-        } else {
-            body.className = "light";
-            switchImg.src = "../img/switch-clipart-OFF.png";
-        }
-    }
+        $("#myMoviesTab").on("click", function() {
+            $("#trending-heading").hide();
+            $("#my-movies-heading").show();
+            $(".sticky-tab").show(); /* Show the Add Movie button when My Movies tab is clicked */
+        });
+
+        // Toggle the light and dark mode
+        $("#toggle-switch").on("click", function() {
+            var body = $("body");
+            var switchImg = $(this);
+
+            if (body.hasClass("light")) {
+                body.removeClass("light");
+                body.addClass("dark");
+                switchImg.attr("src", "../img/switch-clipart-OFF.png");
+            } else {
+                body.removeClass("dark");
+                body.addClass("light");
+                switchImg.attr("src", "../img/light-switch-ON.png");
+            }
+        });
+    });
+
+
+    $(document).on('click', '.edit-movie-btn', function () {
+        var btn = this; // capture the button that was clicked
+
+        // Disable the edit button
+        $(btn).prop("disabled", true);
+
+        // Get the movie ID
+        var movieId = $(this).data('id');
+
+        // Get the movie data from the server
+        $.ajax({
+            method: 'GET',
+            url: url + '/' + movieId,
+            success: function (movie) {
+                // Enable the edit button
+                $(btn).prop("disabled", false);
+
+                // Set the form values
+                $('#edit-movie-id').val(movie.id);
+                $('#edit-movie-title').val(movie.title);
+                $('#edit-movie-rating').val(movie.rating);
+
+                // Show the edit movie modal dialog
+                document.getElementById('editMovieModal').classList.remove('hidden');
+            },
+            error: function () {
+                // Enable the edit button
+                $(btn).prop("disabled", false);
+                alert("Error fetching movie");
+            },
+        });
+    });
+
+// Add click event listener for save edited movie button
+    $('#save-edited-movie-btn').click(function () {
+        // your code...
+
+        // Close the modal
+        document.getElementById('editMovieModal').classList.add('hidden');
+    });
+
+// Add event listener for closing the edit movie modal and enable the edit movie button
+    document.querySelector('#editMovieModal .close').addEventListener('click', function () {
+        document.getElementById('editMovieModal').classList.add('hidden');
+        $('.edit-movie-btn').prop("disabled", false);
+    });
+
+
+    document.getElementById('add-movie-btn').addEventListener('click', function() {
+        document.getElementById('addMovieModal').classList.remove('hidden');
+    });
+
+    document.querySelector('#addMovieModal .close').addEventListener('click', function() {
+        document.getElementById('addMovieModal').classList.add('hidden');
+    });
+    // Show the modal
+    document.getElementById('editMovieModal').classList.remove('hidden');
+
+// Hide the modal
+    document.getElementById('editMovieModal').classList.add('hidden');
+
 
     document.getElementById('toggle-switch').addEventListener('click', toggleMode);
+    // $(document).ready(function() {
+    //     /* Add this script to handle showing and hiding of the trending heading and Add Movie button */
+    //     $("#randomMoviesTab").on("click", function() {
+    //         $("h2").show(); /* Show the heading when Random Movies tab is clicked */
+    //         $(".sticky-tab").hide(); /* Hide the Add Movie button when Random Movies tab is clicked */
+    //     });
+    //
+    //     $("#myMoviesTab").on("click", function() {
+    //         $("h2").hide(); /* Hide the heading when My Movies tab is clicked */
+    //         $(".sticky-tab").show(); /* Show the Add Movie button when My Movies tab is clicked */
+    //     });
+    //
+    //     // Toggle the light and dark mode
+    //     $("#toggle-switch").on("click", function() {
+    //         var body = $("body");
+    //         var switchImg = $(this);
+    //
+    //         if (body.hasClass("light")) {
+    //             body.removeClass("light");
+    //             body.addClass("dark");
+    //             switchImg.attr("src", "../img/switch-clipart-OFF.png");
+    //         } else {
+    //             body.removeClass("dark");
+    //             body.addClass("light");
+    //             switchImg.attr("src", "../img/light-switch-ON.png");
+    //         }
+    //     });
+    // });
+
+
 
 })();
